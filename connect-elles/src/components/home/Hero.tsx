@@ -138,6 +138,9 @@ const Hero = () => {
                   <div className="absolute -left-8 top-1/4 bg-white/80 backdrop-blur-sm rounded-2xl p-3 shadow-xl animate-bounce">
                     <div className="text-pink-800 font-medium">🌸 Support</div>
                   </div>
+                  <div className="absolute -right-16 bottom-3/4 bg-white/80 backdrop-blur-sm rounded-2xl p-3 shadow-xl animate-bounce">
+                    <div className="text-pink-800 font-medium">🤗 Share </div>
+                  </div>
                   <div className="absolute -right-8 bottom-1/4 bg-white/80 backdrop-blur-sm rounded-2xl p-3 shadow-xl animate-bounce delay-150">
                     <div className="text-rose-800 font-medium">
                       💝 Friendship
