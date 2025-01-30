@@ -1,11 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+    checkToken();
+  }, []);
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userRole");
+      setIsLoggedIn(false);
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   const navItems = [
     { label: "Community", href: "/community" },
     { label: "Support Groups", href: "/groups" },
@@ -52,18 +72,33 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/register"
-              className="px-6 py-2 text-white font-medium rounded-lg
+            {!isLoggedIn && (
+              <Link
+                href="/register"
+                className="px-6 py-2 text-white font-medium rounded-lg
                       bg-gradient-to-r from-pink-500 to-rose-500
                       shadow-lg shadow-pink-500/25
                       hover:shadow-pink-500/40
                       transform hover:-translate-y-0.5
                       transition-all duration-300 
                       active:scale-95"
-            >
-              Join Circle
-            </Link>
+              >
+                Join Circle
+              </Link>
+            )}
+            {isLoggedIn && (
+              <Link
+                href="/register"
+                className="px-6 py-2 bg-red-600 text-white font-medium rounded-lg
+               shadow-[0_4px_12px_rgba(220,38,38,0.25)] hover:shadow-[0_6px_20px_rgba(220,38,38,0.35)]
+                          hover:bg-red-700
+                transform hover:-translate-y-0.5
+                transition-all duration-300 
+                active:scale-95"
+              >
+                <button onClick={handleLogout}>Log out</button>
+              </Link>
+            )}
           </div>
 
           <div className="md:hidden flex items-center">
@@ -95,16 +130,29 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/register"
-              className="block w-full text-center px-4 py-3 text-white rounded-lg 
+            {!isLoggedIn && (
+              <Link
+                href="/register"
+                className="block w-full text-center px-4 py-3 text-white rounded-lg 
                       bg-gradient-to-r from-pink-500 to-rose-500
                       shadow-lg shadow-pink-500/25
                       hover:shadow-pink-500/40
                       transition-all duration-300"
-            >
-              Join Circle
-            </Link>
+              >
+                Join Circle
+              </Link>
+            )}
+            {isLoggedIn && (
+              <Link
+                href="/register"
+                className="block w-full bg-red-600 text-center px-4 py-3 text-white rounded-lg 
+                     shadow-[0_4px_12px_rgba(220,38,38,0.25)] hover:shadow-[0_6px_20px_rgba(220,38,38,0.35)]
+                          hover:bg-red-700
+                      transition-all duration-300"
+              >
+                <button onClick={handleLogout}>Log out</button>
+              </Link>
+            )}
           </div>
         </div>
       )}

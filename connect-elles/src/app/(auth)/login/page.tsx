@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { jwtDecode } from "jwt-decode";
+import { DecodedToken } from "@/app/utils/interface";
 
 const girls = require("../../../../public/girl.jpg");
 
@@ -54,9 +56,22 @@ const LoginPage = () => {
       const result = await response.json();
 
       if (response.ok) {
+        const token = result.accessToken;
+        console.log("result", token);
+        localStorage.setItem("token", token);
+        const decoded: DecodedToken = jwtDecode(token);
+        console.log(decoded);
+        localStorage.setItem("userId", decoded.id.toString());
+        localStorage.setItem("userRole", decoded.userRole);
         toast.success("Login successful!");
         setTimeout(() => {
-          router.push("/admin");
+          if (decoded.userRole === "admin") {
+            router.push("/admin");
+          } else if (decoded.userRole === "mentor") {
+            router.push("/mentor");
+          } else {
+            router.push("/");
+          }
         }, 1500);
       } else {
         throw new Error(result.message || "Login failed");
