@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Heart,
@@ -8,9 +9,31 @@ import {
   Calendar,
   MessageCircle,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 const women = require("../../../public/women.jpg");
 
 const Hero = () => {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+    checkToken();
+  }, []);
+  const handledashboard = () => {
+    const userRole = localStorage.getItem("userRole");
+
+    if (userRole === "admin") {
+      router.push("/admin");
+    } else if (userRole === "mentor") {
+      router.push("/mentor");
+    } else {
+      router.push("/");
+    }
+  };
   const featureCards = [
     {
       icon: <Heart className="w-8 h-8 text-rose-400" />,
@@ -99,9 +122,21 @@ const Hero = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300">
-                    Join Our Circle
-                  </button>
+                  {!isLoggedIn && (
+                    <Link href={"/register"}>
+                      <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300">
+                        Join Our Circle
+                      </button>
+                    </Link>
+                  )}
+                  {isLoggedIn && (
+                    <button
+                      onClick={handledashboard}
+                      className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300"
+                    >
+                      Go To Dashboard
+                    </button>
+                  )}
                   <button className="px-6 py-3 border-2 border-pink-200 text-pink-700 rounded-xl font-medium hover:bg-pink-50 transform hover:-translate-y-1 transition-all duration-300">
                     Learn More
                   </button>
