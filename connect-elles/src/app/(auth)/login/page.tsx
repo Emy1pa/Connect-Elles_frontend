@@ -57,10 +57,8 @@ const LoginPage = () => {
 
       if (response.ok) {
         const token = result.accessToken;
-        console.log("result", token);
         localStorage.setItem("token", token);
         const decoded: DecodedToken = jwtDecode(token);
-        console.log(decoded);
         localStorage.setItem("userId", decoded.id.toString());
         localStorage.setItem("userRole", decoded.userRole);
         toast.success("Login successful!");

@@ -2,42 +2,30 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Loader2, X, Pencil, Trash2, Check } from "lucide-react";
 import axios from "axios";
-
-interface Skill {
-  _id: string;
-  title: string;
-  description: string;
-}
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Skill, SkillFormData, skillSchema } from "@/app/utils/types/skill";
+import { useForm } from "react-hook-form";
+import { deleteSkill, editSkill, getAuthHeaders } from "./skill-action";
+import { deleteCategory } from "@/app/admin/categories/category-actions";
+import SkillItem from "./SkillItem";
 const SkillsList = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkill, setNewSkill] = useState({ title: "", description: "" });
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editedSkill, setEditedSkill] = useState({
-    title: "",
-    description: "",
+  const [isSubmit, setIsSubmitting] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<SkillFormData>({
+    resolver: zodResolver(skillSchema),
   });
-
   useEffect(() => {
     fetchSkills();
   }, []);
-
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("Token is missing");
-      return {};
-    }
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    };
-  };
 
   const fetchSkills = async () => {
     try {
@@ -46,6 +34,7 @@ const SkillsList = () => {
       );
       getAuthHeaders();
       setSkills(response.data);
+
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching skills:", error);
@@ -66,6 +55,7 @@ const SkillsList = () => {
         getAuthHeaders()
       );
       setSkills((prevSkills) => [...prevSkills, response.data]);
+      reset();
       setNewSkill({ title: "", description: "" });
       setIsModalOpen(false);
     } catch (error) {
@@ -74,27 +64,17 @@ const SkillsList = () => {
     setIsSubmitting(false);
   };
 
-  const startEditing = (skill: Skill) => {
-    setEditingId(skill._id);
-    setEditedSkill({ title: skill.title, description: skill.description });
-  };
-
-  const handleEditSubmit = async (skillId: string) => {
-    if (!editedSkill.title.trim() || !editedSkill.description.trim()) return;
-
+  const handleEditSkill = async (
+    skillId: string,
+    newSkill: string,
+    newDescription: string
+  ) => {
     try {
-      const response = await axios.put<Skill>(
-        `http://localhost:5000/api/skills/${skillId}`,
-        { title: editedSkill.title, description: editedSkill.description },
-        getAuthHeaders()
-      );
+      const response = await editSkill(skillId, newSkill, newDescription);
       setSkills((prevSkills) =>
-        prevSkills.map((skill) =>
-          skill._id === skillId ? response.data : skill
-        )
+        prevSkills.map((skill) => (skill._id === skillId ? response : skill))
       );
       setEditingId(null);
-      setEditedSkill({ title: "", description: "" });
     } catch (error) {
       console.error("Error updating skill:", error);
       alert("Failed to update skill. Please try again.");
@@ -106,10 +86,7 @@ const SkillsList = () => {
       try {
         const skillId = skill._id;
 
-        await axios.delete(
-          `http://localhost:5000/api/skills/${skillId}`,
-          getAuthHeaders()
-        );
+        await deleteSkill(skill._id);
         setSkills((prevSkills) =>
           prevSkills.filter((s) => s._id !== skill._id)
         );
@@ -161,73 +138,12 @@ const SkillsList = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skills.map((skill) => (
-            <div
+            <SkillItem
               key={skill._id}
-              className="p-6 rounded-2xl border border-teal-200 bg-teal-50 hover:scale-105 transition-all duration-300"
-            >
-              {editingId === skill._id ? (
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    value={editedSkill.title}
-                    onChange={(e) =>
-                      setEditedSkill({ ...editedSkill, title: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    placeholder="Skill title"
-                  />
-                  <textarea
-                    value={editedSkill.description}
-                    onChange={(e) =>
-                      setEditedSkill({
-                        ...editedSkill,
-                        description: e.target.value,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    placeholder="Skill description"
-                    rows={3}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => handleEditSubmit(skill._id)}
-                      className="p-2 text-green-600 hover:text-green-700 transition-colors"
-                    >
-                      <Check className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="p-2 text-slate-600 hover:text-slate-700 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold text-slate-800">
-                      {skill.title}
-                    </h3>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => startEditing(skill)}
-                        className="p-2 text-slate-600 hover:text-teal-500 transition-colors"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(skill)}
-                        className="p-2 text-slate-600 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <p className="text-slate-600">{skill.description}</p>
-                </div>
-              )}
-            </div>
+              skill={skill}
+              onEdit={handleEditSkill}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}
@@ -251,15 +167,21 @@ const SkillsList = () => {
               <input
                 type="text"
                 placeholder="Skill title"
+                {...register("title")}
                 value={newSkill.title}
                 onChange={(e) =>
                   setNewSkill({ ...newSkill, title: e.target.value })
                 }
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
-
+              {errors.title && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.title.message}
+                </p>
+              )}
               <textarea
                 placeholder="Skill description"
+                {...register("description")}
                 value={newSkill.description}
                 onChange={(e) =>
                   setNewSkill({ ...newSkill, description: e.target.value })
@@ -267,7 +189,11 @@ const SkillsList = () => {
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 rows={4}
               />
-
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.description.message}
+                </p>
+              )}
               <button
                 type="submit"
                 disabled={isSubmitting}
