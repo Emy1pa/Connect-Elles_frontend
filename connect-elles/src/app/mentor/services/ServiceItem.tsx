@@ -15,7 +15,7 @@ const ServiceItem: React.FC<ServiceItemProps> = ({
   onDelete,
 }) => {
   const imageLoader = ({ src }: { src: string }) => {
-    return `http://localhost:5000${src}`;
+    return `http://localhost:4000${src}`;
   };
 
   return (
@@ -55,7 +55,7 @@ const ServiceItem: React.FC<ServiceItemProps> = ({
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="text-sm">
           <span className="text-slate-500">Duration:</span>
-          <p className="font-medium">{service.duration} minutes</p>
+          <p className="font-medium">{service.duration} Jours</p>
         </div>
         <div className="text-sm">
           <span className="text-slate-500">Price:</span>

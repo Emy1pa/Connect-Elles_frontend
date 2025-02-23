@@ -43,7 +43,7 @@ const LoginPage = () => {
     try {
       setIsSubmitting(true);
       const response = await fetch(
-        "http://localhost:5000/api/users/auth/login",
+        "http://localhost:4000/api/users/auth/login",
         {
           method: "POST",
           headers: {

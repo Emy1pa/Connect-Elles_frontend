@@ -21,7 +21,7 @@ export const editCategory = async (
 ): Promise<Category> => {
   try {
     const response = await axios.put<Category>(
-      `http://localhost:5000/api/categories/${categoryId}`,
+      `http://localhost:4000/api/categories/${categoryId}`,
       { title },
       getAuthHeaders()
     );
@@ -35,7 +35,7 @@ export const editCategory = async (
 export const deleteCategory = async (categoryId: string): Promise<void> => {
   try {
     await axios.delete(
-      `http://localhost:5000/api/categories/${categoryId}`,
+      `http://localhost:4000/api/categories/${categoryId}`,
       getAuthHeaders()
     );
   } catch (error) {

@@ -29,9 +29,9 @@ const Navbar = () => {
   const navItems = [
     { label: "Community", href: "/community" },
     { label: "Support Groups", href: "/groups" },
-    { label: "Blogs", href: "/blogs" },
+    { label: "Blogs", href: "/user/blogs" },
     { label: "Success Stories", href: "/stories" },
-    { label: "Services", href: "/services" },
+    { label: "Services", href: "/user/services" },
   ];
 
   return (

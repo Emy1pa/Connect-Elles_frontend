@@ -21,7 +21,7 @@ export const editBlog = async (
 ): Promise<Blog> => {
   try {
     const response = await axios.put(
-      `http://localhost:5000/api/blogs/${blogId}`,
+      `http://localhost:4000/api/blogs/${blogId}`,
       formData,
       {
         headers: {
@@ -39,7 +39,7 @@ export const editBlog = async (
 
 export const deleteBlog = async (blogId: string): Promise<void> => {
   try {
-    await axios.delete(`http://localhost:5000/api/blogs/${blogId}`, {
+    await axios.delete(`http://localhost:4000/api/blogs/${blogId}`, {
       headers: getAuthHeaders().headers,
     });
   } catch (error) {
@@ -51,7 +51,7 @@ export const deleteBlog = async (blogId: string): Promise<void> => {
 export const createBlog = async (formData: FormData): Promise<Blog> => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/blogs",
+      "http://localhost:4000/api/blogs",
       formData,
       {
         headers: {

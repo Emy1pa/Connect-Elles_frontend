@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Skill, SkillFormData, skillSchema } from "@/app/utils/types/skill";
 import { useForm } from "react-hook-form";
 import { deleteSkill, editSkill, getAuthHeaders } from "./skill-action";
-import { deleteCategory } from "@/app/admin/categories/category-actions";
 import SkillItem from "./SkillItem";
 const SkillsList = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -30,7 +29,7 @@ const SkillsList = () => {
   const fetchSkills = async () => {
     try {
       const response = await axios.get<Skill[]>(
-        "http://localhost:5000/api/skills"
+        "http://localhost:4000/api/skills"
       );
       getAuthHeaders();
       setSkills(response.data);
@@ -50,7 +49,7 @@ const SkillsList = () => {
 
     try {
       const response = await axios.post<Skill>(
-        "http://localhost:5000/api/skills",
+        "http://localhost:4000/api/skills",
         { title: newSkill.title, description: newSkill.description },
         getAuthHeaders()
       );
