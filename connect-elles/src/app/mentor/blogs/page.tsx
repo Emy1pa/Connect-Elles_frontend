@@ -40,7 +40,7 @@ const BlogsList = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/blogs", {
+      const response = await fetch("http://localhost:4000/api/blogs", {
         headers: getAuthHeaders().headers,
       });
       const data = await response.json();
@@ -54,7 +54,7 @@ const BlogsList = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories", {
+      const response = await fetch("http://localhost:4000/api/categories", {
         headers: getAuthHeaders().headers,
       });
       const data = await response.json();
@@ -91,7 +91,10 @@ const BlogsList = () => {
       });
 
       if (editingBlog) {
-        const updatedBlog = await editBlog(editingBlog._id, formData);
+        const updatedBlog = await editBlog(
+          editingBlog._id.toString(),
+          formData
+        );
         setBlogs((prev) =>
           prev.map((blog) =>
             blog._id === editingBlog._id ? updatedBlog : blog
@@ -123,7 +126,7 @@ const BlogsList = () => {
     });
 
     setPreviewImage(
-      blog.blogImage ? `http://localhost:5000${blog.blogImage}` : null
+      blog.blogImage ? `http://localhost:4000${blog.blogImage}` : null
     );
     setIsModalOpen(true);
   };

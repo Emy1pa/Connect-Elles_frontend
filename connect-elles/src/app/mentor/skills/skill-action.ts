@@ -22,7 +22,7 @@ export const editSkill = async (
 ): Promise<Skill> => {
   try {
     const response = await axios.put(
-      `http://localhost:5000/api/skills/${skillId}`,
+      `http://localhost:4000/api/skills/${skillId}`,
       {
         title,
         description,
@@ -39,7 +39,7 @@ export const editSkill = async (
 export const deleteSkill = async (skillId: string): Promise<void> => {
   try {
     await axios.delete(
-      `http://localhost:5000/api/skills/${skillId}`,
+      `http://localhost:4000/api/skills/${skillId}`,
       getAuthHeaders()
     );
   } catch (error) {

@@ -44,7 +44,7 @@ const ServicesList = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/services", {
+      const response = await fetch("http://localhost:4000/api/services", {
         headers: getAuthHeaders().headers,
       });
       const data = await response.json();
@@ -58,7 +58,7 @@ const ServicesList = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories", {
+      const response = await fetch("http://localhost:4000/api/categories", {
         headers: getAuthHeaders().headers,
       });
       const data = await response.json();
@@ -133,7 +133,7 @@ const ServicesList = () => {
 
     setPreviewImage(
       service.serviceImage
-        ? `http://localhost:5000${service.serviceImage}`
+        ? `http://localhost:4000${service.serviceImage}`
         : null
     );
     setIsModalOpen(true);
@@ -301,7 +301,7 @@ const ServicesList = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-teal-700 mb-1">
-                    Duration (minutes)
+                    Duration (Jours)
                   </label>
                   <input
                     type="number"

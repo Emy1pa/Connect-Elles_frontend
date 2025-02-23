@@ -21,7 +21,7 @@ export const editService = async (
 ): Promise<Service> => {
   try {
     const response = await axios.put(
-      `http://localhost:5000/api/services/${serviceId}`,
+      `http://localhost:4000/api/services/${serviceId}`,
       formData,
       {
         headers: {
@@ -39,7 +39,7 @@ export const editService = async (
 
 export const deleteService = async (serviceId: string): Promise<void> => {
   try {
-    await axios.delete(`http://localhost:5000/api/services/${serviceId}`, {
+    await axios.delete(`http://localhost:4000/api/services/${serviceId}`, {
       headers: getAuthHeaders().headers,
     });
   } catch (error) {
@@ -51,7 +51,7 @@ export const deleteService = async (serviceId: string): Promise<void> => {
 export const createService = async (formData: FormData): Promise<Service> => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/services",
+      "http://localhost:4000/api/services",
       formData,
       {
         headers: {

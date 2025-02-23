@@ -33,7 +33,7 @@ const CategoriesList = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get<Category[]>(
-        "http://localhost:5000/api/categories"
+        "http://localhost:4000/api/categories"
       );
       setCategories(response.data);
       setIsLoading(false);
@@ -47,7 +47,7 @@ const CategoriesList = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.post<Category>(
-        "http://localhost:5000/api/categories",
+        "http://localhost:4000/api/categories",
         data,
         {
           headers: {

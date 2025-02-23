@@ -11,7 +11,7 @@ interface BlogItemProps {
 
 const BlogItem: React.FC<BlogItemProps> = ({ blog, onEdit, onDelete }) => {
   const imageLoader = ({ src }: { src: string }) => {
-    return `http://localhost:5000${src}`;
+    return `http://localhost:4000${src}`;
   };
 
   return (

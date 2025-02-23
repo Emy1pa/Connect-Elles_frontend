@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 const girls = require("../../../../public/girl.jpg");
 
@@ -22,25 +23,9 @@ const registerSchema = z.object({
   profileImage: z.instanceof(File).nullable(),
 });
 type RegisterFormData = z.infer<typeof registerSchema>;
-const VerificationCard = ({ email }: { email: string }) => (
-  <div className="p-8 bg-white/90 rounded-3xl shadow-xl backdrop-blur-md">
-    <div className="text-center">
-      <div className="mx-auto w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4">
-        <Mail className="h-8 w-8 text-pink-500" />
-      </div>
-      <h2 className="text-2xl font-bold text-pink-800 mb-2">
-        Verify Your Email
-      </h2>
-      <p className="text-pink-600 mb-4">We've sent a verification link to:</p>
-      <p className="font-medium text-pink-700 mb-6">{email}</p>
-      <p className="text-sm text-pink-600">
-        Please check your inbox and click the verification link to complete your
-        registration. If you don't see the email, please check your spam folder.
-      </p>
-    </div>
-  </div>
-);
+
 export const RegisterPage = () => {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -78,7 +63,7 @@ export const RegisterPage = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/users/auth/register",
+        "http://localhost:4000/api/users/auth/register",
         {
           method: "POST",
           body: formData,
@@ -92,9 +77,9 @@ export const RegisterPage = () => {
         setRegistrationSuccess(true);
 
         toast.success("Registration successful!");
-        // setTimeout(() => {
-        //   router.push("/login");
-        // }, 1500);
+        setTimeout(() => {
+          router.push("/login");
+        }, 1500);
       } else {
         throw new Error(result.message || "Registration failed");
       }
@@ -145,167 +130,163 @@ export const RegisterPage = () => {
 
       <div className="relative min-h-screen flex items-center justify-center p-4 -mt-4">
         <div className="w-full max-w-md max-h-[80vh] overflow-y-auto custom-scroll rounded-3xl bg-white/80 backdrop-blur-md shadow-2xl">
-          {registrationSuccess ? (
-            <VerificationCard email={userEmail} />
-          ) : (
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-pink-800">
-                  Join Our Circle
-                </h1>
-                <p className="mt-2 text-pink-600">
-                  Start your journey of growth and connection
-                </p>
-              </div>
-
-              <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                  <label className="block text-sm font-medium text-pink-700 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    {...register("fullName")}
-                    type="text"
-                    placeholder="Enter your full name"
-                    className={inputClass}
-                  />
-                  {errors.fullName && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.fullName.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-pink-700 mb-1">
-                    Username
-                  </label>
-                  <input
-                    {...register("username")}
-                    type="text"
-                    placeholder="Enter your username"
-                    className={inputClass}
-                  />
-                  {errors.username && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.username.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-pink-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    {...register("email")}
-                    type="email"
-                    placeholder="Enter your email"
-                    className={inputClass}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <label className="block text-sm font-medium text-pink-700 mb-1">
-                    Password
-                  </label>
-                  <input
-                    {...register("password")}
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    className={inputClass}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 mt-3"
-                  >
-                    {showPassword ? (
-                      <EyeOff
-                        size={20}
-                        className="text-teal-400 hover:text-teal-600"
-                      />
-                    ) : (
-                      <Eye
-                        size={20}
-                        className="text-teal-400 hover:text-teal-600"
-                      />
-                    )}
-                  </button>
-                  {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.password.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-pink-700 mb-1">
-                    Profile Image
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      id="profile-image"
-                      onChange={handleImageChange}
-                    />
-                    {errors.profileImage && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.profileImage.message}
-                      </p>
-                    )}
-                    <label
-                      htmlFor="profile-image"
-                      className="flex items-center justify-center w-full h-32 border-2 border-dashed border-pink-200 rounded-xl cursor-pointer hover:border-pink-400 transition-all duration-300"
-                    >
-                      {previewImage ? (
-                        <div className="relative w-full h-full">
-                          <Image
-                            src={previewImage}
-                            alt="Profile Preview"
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-xl"
-                          />
-                        </div>
-                      ) : (
-                        <div className="text-center">
-                          <Upload className="mx-auto h-8 w-8 text-pink-400" />
-                          <span className="mt-2 block text-sm text-pink-600">
-                            Upload your photo
-                          </span>
-                        </div>
-                      )}
-                    </label>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className={buttonClass}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Creating Account..." : "Create Account"}
-                </button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <Link
-                  href="/login"
-                  className="text-pink-600 hover:text-pink-700 font-medium transition-colors duration-300"
-                >
-                  Already have an account? Sign In
-                </Link>
-              </div>
+          <div className="p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-pink-800">
+                Join Our Circle
+              </h1>
+              <p className="mt-2 text-pink-600">
+                Start your journey of growth and connection
+              </p>
             </div>
-          )}
+
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <label className="block text-sm font-medium text-pink-700 mb-1">
+                  Full Name
+                </label>
+                <input
+                  {...register("fullName")}
+                  type="text"
+                  placeholder="Enter your full name"
+                  className={inputClass}
+                />
+                {errors.fullName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.fullName.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-pink-700 mb-1">
+                  Username
+                </label>
+                <input
+                  {...register("username")}
+                  type="text"
+                  placeholder="Enter your username"
+                  className={inputClass}
+                />
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.username.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-pink-700 mb-1">
+                  Email
+                </label>
+                <input
+                  {...register("email")}
+                  type="email"
+                  placeholder="Enter your email"
+                  className={inputClass}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="relative">
+                <label className="block text-sm font-medium text-pink-700 mb-1">
+                  Password
+                </label>
+                <input
+                  {...register("password")}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 mt-3"
+                >
+                  {showPassword ? (
+                    <EyeOff
+                      size={20}
+                      className="text-teal-400 hover:text-teal-600"
+                    />
+                  ) : (
+                    <Eye
+                      size={20}
+                      className="text-teal-400 hover:text-teal-600"
+                    />
+                  )}
+                </button>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-pink-700 mb-1">
+                  Profile Image
+                </label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id="profile-image"
+                    onChange={handleImageChange}
+                  />
+                  {errors.profileImage && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.profileImage.message}
+                    </p>
+                  )}
+                  <label
+                    htmlFor="profile-image"
+                    className="flex items-center justify-center w-full h-32 border-2 border-dashed border-pink-200 rounded-xl cursor-pointer hover:border-pink-400 transition-all duration-300"
+                  >
+                    {previewImage ? (
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={previewImage}
+                          alt="Profile Preview"
+                          layout="fill"
+                          objectFit="cover"
+                          className="rounded-xl"
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <Upload className="mx-auto h-8 w-8 text-pink-400" />
+                        <span className="mt-2 block text-sm text-pink-600">
+                          Upload your photo
+                        </span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className={buttonClass}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Creating Account..." : "Create Account"}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <Link
+                href="/login"
+                className="text-pink-600 hover:text-pink-700 font-medium transition-colors duration-300"
+              >
+                Already have an account? Sign In
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
