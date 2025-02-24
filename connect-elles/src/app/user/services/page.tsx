@@ -13,6 +13,8 @@ const ServiceList = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [availability, setAvailability] = useState("");
+
   const fetchServices = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/services", {
@@ -53,7 +55,9 @@ const ServiceList = () => {
     const priceMatch =
       (!minPrice || service.price >= parseFloat(minPrice)) &&
       (!maxPrice || service.price <= parseFloat(maxPrice));
-    return searchMatch && categoryMatch && priceMatch;
+    const availabilityMatch =
+      availability === "" || service.status === availability;
+    return searchMatch && categoryMatch && priceMatch && availabilityMatch;
   });
   if (isLoading) {
     return (
@@ -106,6 +110,20 @@ const ServiceList = () => {
                 <Tag className="w-5 h-5 text-slate-400" />
               </div>
             </div>
+            <div className="relative w-full md:w-48">
+              <select
+                value={availability}
+                onChange={(e) => setAvailability(e.target.value)}
+                className="custom-scroll w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200 appearance-none bg-white overflow-y-auto"
+              >
+                <option value="">All Availability</option>
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="UNAVAILABLE">NOT AVAILABLE</option>
+              </select>
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Users className="w-5 h-5 text-slate-400" />
+              </div>
+            </div>
           </div>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center mt-4">
             <div className="w-full md:w-48">
@@ -132,7 +150,11 @@ const ServiceList = () => {
         {filteredServices.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg text-slate-600">
-              {searchTerm || selectedCategory || minPrice || maxPrice
+              {searchTerm ||
+              selectedCategory ||
+              minPrice ||
+              maxPrice ||
+              availability
                 ? "No Services found matching your filters"
                 : " No services available at the moment."}
             </p>
