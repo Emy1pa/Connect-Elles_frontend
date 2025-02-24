@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Calendar, Tag, User } from "lucide-react";
+import { ArrowRight, Calendar, Search, Tag, User } from "lucide-react";
 import { Blog } from "@/app/utils/interface";
 import { useRouter } from "next/navigation";
 
@@ -9,29 +9,32 @@ const BlogList = () => {
 
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const fetchPublishedBlogs = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/blogs/published",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setBlogs(data);
+    } catch (error) {
+      console.error("Error fetching published blogs:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchPublishedBlogs = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:4000/api/blogs/published",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        setBlogs(data);
-      } catch (error) {
-        console.error("Error fetching published blogs:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchPublishedBlogs();
   }, []);
+
+  const filteredBlogs = blogs.filter((blog) =>
+    blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -54,17 +57,29 @@ const BlogList = () => {
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
             Discover inspiring stories, helpful tips, and community highlights
           </p>
+          <div className="relative max-w-md mx-auto mt-8">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search blogs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-pink-100 focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50 transition-colors duration-200"
+            />
+          </div>
         </div>
 
-        {blogs.length === 0 ? (
+        {filteredBlogs.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg text-slate-600">
-              No published blogs available at the moment.
+              {searchTerm
+                ? "No Blogs found matching your search"
+                : "No published blogs available at the moment."}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogs.map((blog) => (
+            {filteredBlogs.map((blog) => (
               <div
                 key={blog._id}
                 className="group bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-pink-100/50 hover:shadow-pink-200/50 transition-all duration-300 border border-pink-100 flex flex-col h-full"
