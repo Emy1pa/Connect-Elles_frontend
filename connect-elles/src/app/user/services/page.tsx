@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Clock, Tag, Users, Calendar } from "lucide-react";
+import { ArrowRight, Clock, Tag, Users, Calendar, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Service } from "@/app/utils/interface";
 
@@ -8,6 +8,9 @@ const ServiceList = () => {
   const router = useRouter();
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const fetchServices = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/services", {
@@ -23,11 +26,30 @@ const ServiceList = () => {
       setIsLoading(false);
     }
   };
-
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/categories", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
   useEffect(() => {
-    fetchServices();
+    Promise.all([fetchCategories(), fetchServices()]);
   }, []);
-
+  const filteredServices = services.filter((service) => {
+    const searchMatch = service.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const categoryMatch =
+      selectedCategory === "" || service.category?._id === selectedCategory;
+    return searchMatch && categoryMatch;
+  });
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -50,17 +72,49 @@ const ServiceList = () => {
             Explore our range of professional services designed to meet your
             needs
           </p>
+          <div className="max-w-3xl mx-auto mt-8 flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search Services..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200"
+              />
+            </div>
+
+            <div className="relative w-full md:w-48">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="custom-scroll w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200 appearance-none bg-white overflow-y-auto"
+              >
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Tag className="w-5 h-5 text-slate-400" />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {services.length === 0 ? (
+        {filteredServices.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg text-slate-600">
-              No services available at the moment.
+              {searchTerm || selectedCategory
+                ? "No Services found matching your filters"
+                : " No services available at the moment."}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service) => (
+            {filteredServices.map((service) => (
               <div
                 key={service._id}
                 className="group bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-emerald-100/50 hover:shadow-emerald-200/50 transition-all duration-300 border border-emerald-100 flex flex-col h-full"
