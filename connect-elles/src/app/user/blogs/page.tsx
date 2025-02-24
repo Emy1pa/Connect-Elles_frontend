@@ -12,7 +12,6 @@ const BlogList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-
   const fetchCategories = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/categories", {
