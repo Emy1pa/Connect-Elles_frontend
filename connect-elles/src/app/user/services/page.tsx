@@ -11,6 +11,8 @@ const ServiceList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const fetchServices = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/services", {
@@ -48,7 +50,10 @@ const ServiceList = () => {
       .includes(searchTerm.toLowerCase());
     const categoryMatch =
       selectedCategory === "" || service.category?._id === selectedCategory;
-    return searchMatch && categoryMatch;
+    const priceMatch =
+      (!minPrice || service.price >= parseFloat(minPrice)) &&
+      (!maxPrice || service.price <= parseFloat(maxPrice));
+    return searchMatch && categoryMatch && priceMatch;
   });
   if (isLoading) {
     return (
@@ -102,12 +107,32 @@ const ServiceList = () => {
               </div>
             </div>
           </div>
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-center mt-4">
+            <div className="w-full md:w-48">
+              <input
+                type="number"
+                placeholder="Min Price"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200"
+              />
+            </div>
+            <div className="w-full md:w-48">
+              <input
+                type="number"
+                placeholder="Max Price"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200"
+              />
+            </div>
+          </div>
         </div>
 
         {filteredServices.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg text-slate-600">
-              {searchTerm || selectedCategory
+              {searchTerm || selectedCategory || minPrice || maxPrice
                 ? "No Services found matching your filters"
                 : " No services available at the moment."}
             </p>
