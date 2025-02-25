@@ -71,3 +71,16 @@ export interface Favorite {
     title: string;
   };
 }
+
+export interface Comment {
+  _id: string;
+  text: string;
+  user: {
+    _id: string;
+    fullName: string;
+    profileImage?: string;
+  };
+  blog: string;
+  createdAt: string;
+  updatedAt: string;
+}
