@@ -87,6 +87,13 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
       prevComments.filter((comment) => comment._id !== commentId)
     );
   };
+  const handleCommentUpdated = (commentId: string, updatedText: string) => {
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment._id === commentId ? { ...comment, text: updatedText } : comment
+      )
+    );
+  };
   const checkIfFavorite = async () => {
     if (!userId || !token) return;
     try {
@@ -327,6 +334,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                         <CommentList
                           comments={comments}
                           onCommentDeleted={handleCommentDeleted}
+                          onCommentUpdated={handleCommentUpdated}
                         />
                       </div>
                     </div>
