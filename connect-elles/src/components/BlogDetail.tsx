@@ -46,7 +46,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
         checkIfFavorite();
       }
     }
-  }, [blogId]);
+  }, [blogId, userId]);
 
   const checkIfFavorite = async () => {
     if (!userId || !token) return;
