@@ -1,12 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import { Comment } from "@/app/utils/interface";
-import { User, Clock } from "lucide-react";
+import { User, Clock, Trash2 } from "lucide-react";
 
 interface CommentListProps {
   comments: Comment[];
+  onCommentDeleted: (commentId: string) => void;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ comments }) => {
+const CommentList: React.FC<CommentListProps> = ({
+  comments,
+  onCommentDeleted,
+}) => {
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  const handleDeleteClick = (commentId: string) => {
+    if (confirm("Are you sure you want to delete this comment?")) {
+      deleteComment(commentId);
+    }
+  };
+  const deleteComment = async (commentId: string) => {
+    if (!token) {
+      alert("You must be logged in to delete comments");
+      return;
+    }
+
+    setIsDeleting(commentId);
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        onCommentDeleted(commentId);
+      } else {
+        const error = await response.json();
+        console.error("Failed to delete comment:", error);
+        alert("Failed to delete comment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
   if (comments.length === 0) {
     return (
       <div className="text-center py-8 bg-gray-50 rounded-lg">
@@ -51,6 +97,20 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
                 day: "numeric",
               })}
             </div>
+            {userId === comment.user._id && (
+              <button
+                onClick={() => handleDeleteClick(comment._id)}
+                disabled={isDeleting === comment._id}
+                className={`p-1.5 rounded-full text-gray-400 hover:text-rose-500 hover:bg-rose-50 transition-colors ${
+                  isDeleting === comment._id
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                aria-label="Delete comment"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
           <div className="text-slate-700 whitespace-pre-line">
             {comment.text}

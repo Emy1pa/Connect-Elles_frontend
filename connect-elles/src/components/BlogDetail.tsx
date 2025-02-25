@@ -82,7 +82,11 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
   const handleCommentAdded = (newComment: Comment) => {
     setComments((prevComments) => [newComment, ...prevComments]);
   };
-
+  const handleCommentDeleted = (commentId: string) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment._id !== commentId)
+    );
+  };
   const checkIfFavorite = async () => {
     if (!userId || !token) return;
     try {
@@ -320,7 +324,10 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                         <h3 className="text-2xl font-bold text-slate-800 mb-6 relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-pink-300 after:bottom-0 after:left-0 pb-2">
                           Comments ({comments.length})
                         </h3>
-                        <CommentList comments={comments} />
+                        <CommentList
+                          comments={comments}
+                          onCommentDeleted={handleCommentDeleted}
+                        />
                       </div>
                     </div>
                   )}
