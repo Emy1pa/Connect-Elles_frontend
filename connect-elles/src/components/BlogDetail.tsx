@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
-import { Blog } from "@/app/utils/interface";
+import { ArrowLeft, Calendar, Tag, User, Heart } from "lucide-react";
+import { Blog, Favorite } from "@/app/utils/interface";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -12,7 +12,12 @@ interface BlogDetailProps {
 const BlogDetail = ({ blogId }: BlogDetailProps) => {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteId, setFavoriteId] = useState<string | null>(null);
+
   const router = useRouter();
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchBlogDetails = async () => {
@@ -37,8 +42,87 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
 
     if (blogId) {
       fetchBlogDetails();
+      if (userId) {
+        checkIfFavorite();
+      }
     }
   }, [blogId]);
+
+  const checkIfFavorite = async () => {
+    if (!userId || !token) return;
+    try {
+      const response = await fetch(
+        `http://localhost:4000/favorites/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const favorites: Favorite[] = await response.json();
+        const favorite = favorites.find(
+          (fav) => fav.blog && fav.blog._id === blogId
+        );
+        if (favorite) {
+          setIsFavorite(true);
+          setFavoriteId(favorite._id);
+        } else {
+          setIsFavorite(false);
+          setFavoriteId(null);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking favorites:", error);
+    }
+  };
+
+  const handleFavoriteToggle = async () => {
+    if (!userId || !token) {
+      alert("Please log in to add favorites");
+      return;
+    }
+
+    try {
+      if (isFavorite && favoriteId) {
+        const response = await fetch(
+          `http://localhost:4000/favorites/${favoriteId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setIsFavorite(false);
+          setFavoriteId(null);
+        }
+      } else {
+        const response = await fetch(
+          `http://localhost:4000/favorites/${userId}/${blogId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setIsFavorite(true);
+          setFavoriteId(data._id);
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
 
   const handleGoBack = () => {
     router.back();
@@ -128,6 +212,26 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                       <User className="w-5 h-5 mr-2" />
                       {blog.user?.fullName}
                     </div>
+                    {userId && (
+                      <button
+                        onClick={handleFavoriteToggle}
+                        className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full hover:bg-black/20 transition-colors"
+                        aria-label={
+                          isFavorite
+                            ? "Remove from favorites"
+                            : "Add to favorites"
+                        }
+                      >
+                        <Heart
+                          className={`w-5 h-5 mr-2 ${
+                            isFavorite
+                              ? "fill-pink-500 text-pink-500"
+                              : "text-white"
+                          }`}
+                        />
+                        {isFavorite ? "Favorited" : "Add to favorites"}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

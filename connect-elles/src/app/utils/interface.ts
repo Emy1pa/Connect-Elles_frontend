@@ -63,3 +63,11 @@ export interface Service {
     profileImage?: string;
   };
 }
+
+export interface Favorite {
+  _id: string;
+  blog: {
+    _id: string;
+    title: string;
+  };
+}
