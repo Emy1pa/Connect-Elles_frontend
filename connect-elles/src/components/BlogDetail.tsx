@@ -1,9 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Calendar, Tag, User, Heart } from "lucide-react";
-import { Blog, Favorite } from "@/app/utils/interface";
+import {
+  ArrowLeft,
+  Calendar,
+  Tag,
+  User,
+  Heart,
+  MessageCircle,
+} from "lucide-react";
+import { Blog, Comment, Favorite } from "@/app/utils/interface";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import CommentForm from "./CommentForm";
+import CommentList from "./CommentList";
 
 interface BlogDetailProps {
   blogId: string;
@@ -14,7 +23,8 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
-
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [showComments, setShowComments] = useState(false);
   const router = useRouter();
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
@@ -47,6 +57,31 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
       }
     }
   }, [blogId, userId]);
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/comments`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setComments(data);
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+  useEffect(() => {
+    if (showComments) {
+      fetchComments();
+    }
+  }, [showComments, blogId]);
+
+  const handleCommentAdded = (newComment: Comment) => {
+    setComments((prevComments) => [newComment, ...prevComments]);
+  };
 
   const checkIfFavorite = async () => {
     if (!userId || !token) return;
@@ -258,6 +293,37 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                   <div
                     dangerouslySetInnerHTML={{ __html: blog.content || "" }}
                   />
+                </div>
+                <div className="border-t border-gray-200 pt-10">
+                  <button
+                    onClick={() => setShowComments(!showComments)}
+                    className="flex items-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300 mb-8"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    {showComments ? "Hide Comments" : "Show Comments"}
+                  </button>
+
+                  {showComments && (
+                    <div className="space-y-10">
+                      <div>
+                        <h3 className="text-2xl font-bold text-slate-800 mb-6 relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-pink-300 after:bottom-0 after:left-0 pb-2">
+                          Add a Comment
+                        </h3>
+                        <CommentForm
+                          blogId={blogId}
+                          user={userId}
+                          onCommentAdded={handleCommentAdded}
+                        />
+                      </div>
+
+                      <div>
+                        <h3 className="text-2xl font-bold text-slate-800 mb-6 relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-pink-300 after:bottom-0 after:left-0 pb-2">
+                          Comments ({comments.length})
+                        </h3>
+                        <CommentList comments={comments} />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
