@@ -3,7 +3,7 @@ import { Send } from "lucide-react";
 
 interface CommentFormProps {
   blogId: string;
-  user: string;
+  user: string | null;
   onCommentAdded: (newComment: any) => void;
 }
 
@@ -12,7 +12,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
   user,
   onCommentAdded,
 }) => {
-  const [content, setContent] = useState("");
+  const [text, setText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const userId = localStorage.getItem("userId");
@@ -21,7 +21,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!content.trim()) return;
+    if (!text.trim()) return;
     if (!userId || !token) {
       alert("Please log in to add a comment");
       return;
@@ -39,8 +39,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            content,
-            userId,
+            text: text,
           }),
         }
       );
@@ -48,7 +47,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
       if (response.ok) {
         const newComment = await response.json();
         onCommentAdded(newComment);
-        setContent("");
+        setText("");
       } else {
         const error = await response.json();
         console.error("Failed to submit comment:", error);
@@ -67,13 +66,13 @@ const CommentForm: React.FC<CommentFormProps> = ({
       <div className="flex items-start space-x-4">
         <div className="flex-grow">
           <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
             placeholder="Write a comment..."
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none min-h-[100px]"
-            disabled={isSubmitting || !userId}
+            disabled={isSubmitting || !user}
           />
-          {!userId && (
+          {!user && (
             <p className="mt-2 text-sm text-rose-500">
               Please log in to comment
             </p>
@@ -81,9 +80,9 @@ const CommentForm: React.FC<CommentFormProps> = ({
         </div>
         <button
           type="submit"
-          disabled={isSubmitting || !content.trim() || !userId}
+          disabled={isSubmitting || !text.trim() || !userId}
           className={`px-4 py-3 rounded-lg ${
-            isSubmitting || !content.trim() || !userId
+            isSubmitting || !text.trim() || !userId
               ? "bg-gray-300 cursor-not-allowed"
               : "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300"
           }`}
