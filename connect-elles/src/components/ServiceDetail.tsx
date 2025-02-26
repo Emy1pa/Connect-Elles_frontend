@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Calendar, Tag, Clock, Users, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Tag,
+  Clock,
+  Users,
+  User,
+  LogIn,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Service } from "@/app/utils/interface";
 
@@ -11,6 +19,10 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
   const [service, setService] = useState<Service | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchServiceDetails = async () => {
@@ -45,7 +57,9 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
   const handleReservation = () => {
     console.log("reserved");
   };
-
+  const handleLogin = () => {
+    router.push("/login");
+  };
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-emerald-50 to-green-50">
@@ -70,7 +84,49 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
       </div>
     );
   }
+  const renderReservationButton = () => {
+    if (!token) {
+      return (
+        <div className="space-y-4">
+          <p className="text-center text-emerald-600 font-medium">
+            Please login to make a reservation
+          </p>
+          <button
+            onClick={handleLogin}
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-medium shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transform hover:-translate-y-1 transition-all duration-300"
+          >
+            <LogIn className="w-5 h-5 mr-2" />
+            Login to Reserve
+          </button>
+        </div>
+      );
+    }
 
+    if (userRole !== "normal-user") {
+      return (
+        <div className="space-y-4">
+          <p className="text-center text-amber-600 font-medium">
+            Only regular users can make reservations
+          </p>
+          <button
+            disabled
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gray-400 text-white font-medium cursor-not-allowed opacity-75"
+          >
+            Reservation Not Available
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <button
+        onClick={handleReservation}
+        className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-medium shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transform hover:-translate-y-1 transition-all duration-300"
+      >
+        Réserver
+      </button>
+    );
+  };
   return (
     <div className="pt-[navbar-height]">
       <div className="relative min-h-[calc(100vh-navbar-height)]">
@@ -170,13 +226,7 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
                     }}
                   />
                 </div>
-
-                <button
-                  onClick={handleReservation}
-                  className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-medium shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  Réserver
-                </button>
+                {renderReservationButton()}
               </div>
             </div>
           </div>
