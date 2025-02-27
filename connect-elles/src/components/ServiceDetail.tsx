@@ -241,6 +241,8 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
       <ReservationModal
         isOpen={isReservationModalOpen}
         onClose={handleCloseModal}
+        userId={userId}
+        serviceId={serviceId}
       />
     </div>
   );

@@ -84,3 +84,12 @@ export interface Comment {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ValidationErrors {
+  reservationDate?: string;
+  cardHolderName?: string;
+  cardNumber?: string;
+  cardExpiry?: string;
+  cardCVV?: string;
+  general?: string;
+}
