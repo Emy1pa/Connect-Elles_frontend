@@ -91,6 +91,21 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
     );
   }
   const renderReservationButton = () => {
+    if (service.numberOfPlaces === 0) {
+      return (
+        <div className="space-y-4">
+          <p className="text-center text-red-600 font-medium">
+            Service is unavailable - No places left
+          </p>
+          <button
+            disabled
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gray-400 text-white font-medium cursor-not-allowed opacity-75"
+          >
+            Service Unavailable
+          </button>
+        </div>
+      );
+    }
     if (!token) {
       return (
         <div className="space-y-4">

@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { headers } from "next/headers";
 import Link from "next/link";
 
 interface ReservationModalProps {
