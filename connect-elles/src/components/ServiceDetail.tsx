@@ -27,27 +27,26 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
   const userRole = localStorage.getItem("userRole");
   const userId = localStorage.getItem("userId");
 
+  const fetchServiceDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/services/${serviceId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      setService(data);
+    } catch (error) {
+      console.error("Error fetching service details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchServiceDetails = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/api/services/${serviceId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        console.log(data);
-        setService(data);
-      } catch (error) {
-        console.error("Error fetching service details:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     if (serviceId) {
       fetchServiceDetails();
     }
@@ -63,9 +62,13 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
   const handleCloseModal = () => {
     setIsReservationModalOpen(false);
   };
+  const handleReservationSuccess = () => {
+    fetchServiceDetails();
+  };
   const handleLogin = () => {
     router.push("/login");
   };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-emerald-50 to-green-50">
@@ -258,6 +261,7 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
         onClose={handleCloseModal}
         userId={userId}
         serviceId={serviceId}
+        onReservationSuccess={handleReservationSuccess}
       />
     </div>
   );

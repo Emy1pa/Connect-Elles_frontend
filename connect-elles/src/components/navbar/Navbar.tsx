@@ -27,10 +27,8 @@ const Navbar = () => {
     }
   };
   const navItems = [
-    { label: "Community", href: "/community" },
-    { label: "Support Groups", href: "/groups" },
+    { label: "Mentors", href: "/mentprs" },
     { label: "Blogs", href: "/user/blogs" },
-    { label: "Success Stories", href: "/stories" },
     { label: "Services", href: "/user/services" },
   ];
 

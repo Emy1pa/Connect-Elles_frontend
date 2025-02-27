@@ -15,6 +15,7 @@ interface ReservationModalProps {
   onClose: () => void;
   userId: string | null;
   serviceId: string;
+  onReservationSuccess: () => void;
 }
 
 const ReservationModal: React.FC<ReservationModalProps> = ({
@@ -22,6 +23,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   onClose,
   userId,
   serviceId,
+  onReservationSuccess,
 }) => {
   const router = useRouter();
   const [reservationDate, setReservationDate] = useState("");
@@ -109,6 +111,9 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
       setCardNumber("");
       setCardExpiry("");
       setCardCVV("");
+
+      onReservationSuccess();
+
       setTimeout(() => {
         onClose();
         <Link href={"/user/services"} />;
