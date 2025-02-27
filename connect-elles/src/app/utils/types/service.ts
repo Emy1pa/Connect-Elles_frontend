@@ -10,7 +10,7 @@ export const serviceSchema = z.object({
   serviceImage: z.instanceof(File).nullable(),
   duration: z.number().min(1, "Duration must be at least 1 minute"),
   price: z.number().min(0, "Price cannot be negative"),
-  numberOfPlaces: z.number().min(1, "Number of places must be at least 1"),
+  numberOfPlaces: z.number().min(0, "Number of places must be at least 0"),
 });
 
 export interface Service {
