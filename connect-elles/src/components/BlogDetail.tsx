@@ -59,11 +59,14 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
   }, [blogId, userId]);
   const fetchComments = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/comments`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:4000/comments/blog/${blogId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -77,7 +80,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
     if (showComments) {
       fetchComments();
     }
-  }, [showComments, blogId]);
+  }, [showComments, blogId, userId]);
 
   const handleCommentAdded = (newComment: Comment) => {
     setComments((prevComments) => [newComment, ...prevComments]);
