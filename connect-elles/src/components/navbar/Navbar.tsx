@@ -9,11 +9,13 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    const checkToken = async () => {
+    const checkToken = () => {
       const token = localStorage.getItem("token");
       setIsLoggedIn(!!token);
     };
     checkToken();
+    const intervalId = setInterval(checkToken, 1000);
+    return () => clearInterval(intervalId);
   }, []);
   const handleLogout = async () => {
     try {

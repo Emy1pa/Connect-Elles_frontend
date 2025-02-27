@@ -118,7 +118,7 @@ const ServiceList = () => {
               >
                 <option value="">All Availability</option>
                 <option value="AVAILABLE">AVAILABLE</option>
-                <option value="UNAVAILABLE">NOT AVAILABLE</option>
+                <option value="NOT-AVAILABLE">NOT AVAILABLE</option>
               </select>
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                 <Users className="w-5 h-5 text-slate-400" />
