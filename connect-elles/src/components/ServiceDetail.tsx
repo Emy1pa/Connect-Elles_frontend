@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Service } from "@/app/utils/interface";
+import ReservationModal from "./ReservationModal";
 
 interface ServiceDetailProps {
   serviceId: string;
@@ -18,6 +19,8 @@ interface ServiceDetailProps {
 const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
   const [service, setService] = useState<Service | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
+
   const router = useRouter();
 
   const token = localStorage.getItem("token");
@@ -55,7 +58,10 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
   };
 
   const handleReservation = () => {
-    console.log("reserved");
+    setIsReservationModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsReservationModalOpen(false);
   };
   const handleLogin = () => {
     router.push("/login");
@@ -232,6 +238,10 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
           </div>
         </div>
       </div>
+      <ReservationModal
+        isOpen={isReservationModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };
