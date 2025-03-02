@@ -153,22 +153,22 @@ const BlogsList = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-rose-500 animate-spin" />
       </div>
     );
   }
 
   const inputClass =
-    "w-full px-4 py-3 rounded-xl border border-teal-200 focus:border-teal-400 focus:ring-teal-400 focus:ring-2 focus:outline-none transition-all duration-300 bg-white/90";
+    "w-full px-4 py-3 rounded-xl border border-rose-200 focus:border-rose-400 focus:ring-rose-400 focus:ring-2 focus:outline-none transition-all duration-300 bg-white/90";
 
   const buttonClass =
-    "w-full px-6 py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transform hover:-translate-y-1 transition-all duration-300";
+    "w-full px-6 py-3 bg-gradient-to-r from-rose-400 to-rose-600 text-white rounded-xl font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <span className="inline-block px-4 py-2 rounded-full bg-teal-100 text-teal-700 text-sm font-medium">
+          <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium">
             Blogs
           </span>
           <h2 className="mt-2 text-3xl font-bold text-slate-800">
@@ -183,7 +183,7 @@ const BlogsList = () => {
       </div>
 
       {blogs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 bg-teal-50 rounded-2xl border border-teal-200">
+        <div className="flex flex-col items-center justify-center p-8 bg-rose-50 rounded-2xl border border-rose-200">
           <div className="text-xl font-medium text-slate-800 mb-2">
             No Blogs Found
           </div>
@@ -220,7 +220,7 @@ const BlogsList = () => {
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Title
                 </label>
                 <input {...register("title")} className={inputClass} />
@@ -232,7 +232,7 @@ const BlogsList = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Category
                 </label>
                 <select {...register("categoryId")} className={inputClass}>
@@ -251,7 +251,7 @@ const BlogsList = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Blog Image
                 </label>
                 <div className="relative">
@@ -264,7 +264,7 @@ const BlogsList = () => {
                   />
                   <label
                     htmlFor="blog-image"
-                    className="flex items-center justify-center w-full h-32 border-2 border-dashed border-teal-200 rounded-xl cursor-pointer hover:border-teal-400 transition-all duration-300"
+                    className="flex items-center justify-center w-full h-32 border-2 border-dashed border-rose-200 rounded-xl cursor-pointer hover:border-rose-400 transition-all duration-300"
                   >
                     {previewImage ? (
                       <div className="relative w-full h-full">
@@ -278,8 +278,8 @@ const BlogsList = () => {
                       </div>
                     ) : (
                       <div className="text-center">
-                        <Upload className="mx-auto h-8 w-8 text-teal-400" />
-                        <span className="mt-2 block text-sm text-teal-600">
+                        <Upload className="mx-auto h-8 w-8 text-rose-400" />
+                        <span className="mt-2 block text-sm text-rose-600">
                           Upload blog image
                         </span>
                       </div>
@@ -289,7 +289,7 @@ const BlogsList = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Summary
                 </label>
                 <textarea
@@ -305,7 +305,7 @@ const BlogsList = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Content
                 </label>
                 <textarea
@@ -321,7 +321,7 @@ const BlogsList = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Status
                 </label>
                 <select {...register("status")} className={inputClass}>

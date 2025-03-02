@@ -15,7 +15,7 @@ const BlogItem: React.FC<BlogItemProps> = ({ blog, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="p-6 rounded-2xl border border-teal-200 bg-teal-50 hover:shadow-lg transition-all duration-300">
+    <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50 hover:shadow-lg transition-all duration-300">
       {blog.blogImage && (
         <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
           <Image
@@ -53,7 +53,7 @@ const BlogItem: React.FC<BlogItemProps> = ({ blog, onEdit, onDelete }) => {
         <div className="flex gap-2">
           <button
             onClick={() => onEdit(blog)}
-            className="p-2 text-slate-600 hover:text-teal-500 transition-colors"
+            className="p-2 text-slate-600 hover:text-rose-500 transition-colors"
           >
             <Pencil className="w-4 h-4" />
           </button>

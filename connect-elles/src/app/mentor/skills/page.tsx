@@ -99,7 +99,7 @@ const SkillsList = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-rose-500 animate-spin" />
       </div>
     );
   }
@@ -108,7 +108,7 @@ const SkillsList = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <span className="inline-block px-4 py-2 rounded-full bg-teal-100 text-teal-700 text-sm font-medium">
+          <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium">
             Skills
           </span>
           <h2 className="mt-2 text-3xl font-bold text-slate-800">
@@ -118,7 +118,7 @@ const SkillsList = () => {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg hover:shadow-lg hover:shadow-teal-500/25 flex items-center gap-2 transition-all duration-300"
+          className="px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg hover:shadow-lg hover:shadow-rose-500/25 flex items-center gap-2 transition-all duration-300"
         >
           <Plus className="w-5 h-5" />
           Add Skill
@@ -126,7 +126,7 @@ const SkillsList = () => {
       </div>
 
       {skills.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 bg-teal-50 rounded-2xl border border-teal-200">
+        <div className="flex flex-col items-center justify-center p-8 bg-rose-50 rounded-2xl border border-rose-200">
           <div className="text-xl font-medium text-slate-800 mb-2">
             No Skills Found
           </div>
@@ -171,7 +171,7 @@ const SkillsList = () => {
                 onChange={(e) =>
                   setNewSkill({ ...newSkill, title: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               />
               {errors.title && (
                 <p className="mt-1 text-sm text-red-500">
@@ -185,7 +185,7 @@ const SkillsList = () => {
                 onChange={(e) =>
                   setNewSkill({ ...newSkill, description: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
                 rows={4}
               />
               {errors.description && (
@@ -196,7 +196,7 @@ const SkillsList = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg hover:shadow-lg hover:shadow-teal-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                className="w-full px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg hover:shadow-lg hover:shadow-rose-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
