@@ -67,8 +67,8 @@ const LoginPage = () => {
             router.push("/admin");
           } else if (decoded.userRole === "mentor") {
             router.push("/mentor");
-          } else {
-            router.push("/");
+          } else if (decoded.userRole === "normal-user") {
+            router.push("/user");
           }
         }, 1500);
       } else {
@@ -83,16 +83,16 @@ const LoginPage = () => {
   };
 
   const inputClass =
-    "w-full px-4 py-3 rounded-xl border border-teal-200 focus:border-teal-400 focus:ring-teal-400 focus:ring-2 focus:outline-none transition-all duration-300 bg-white/90";
+    "w-full px-4 py-3 rounded-xl border border-rose-200 focus:border-rose-400 focus:ring-rose-400 focus:ring-2 focus:outline-none transition-all duration-300 bg-white/90";
 
-  const buttonClass = `w-full px-6 py-3 bg-gradient-to-r from-teal-400 to-pink-400 text-white rounded-xl 
-    font-medium shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transform 
+  const buttonClass = `w-full px-6 py-3 bg-gradient-to-r from-rose-400 to-pink-400 text-white rounded-xl 
+    font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform 
     hover:-translate-y-1 transition-all duration-300 ${
       isSubmitting ? "opacity-50 cursor-not-allowed" : ""
     }`;
 
   return (
-    <div className="h-screen w-full bg-teal-50 relative overflow-hidden">
+    <div className="h-screen w-full bg-rose-50 relative overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src={girls}
@@ -108,15 +108,15 @@ const LoginPage = () => {
         <div className="w-full max-w-md rounded-3xl bg-white/80 backdrop-blur-md shadow-2xl">
           <div className="p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-teal-800">Welcome Back</h1>
-              <p className="mt-2 text-teal-600">
+              <h1 className="text-3xl font-bold text-rose-800">Welcome Back</h1>
+              <p className="mt-2 text-rose-600">
                 Continue your journey with us
               </p>
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Email
                 </label>
                 <input
@@ -133,7 +133,7 @@ const LoginPage = () => {
               </div>
 
               <div className="relative">
-                <label className="block text-sm font-medium text-teal-700 mb-1">
+                <label className="block text-sm font-medium text-rose-700 mb-1">
                   Password
                 </label>
                 <div className="relative">
@@ -151,12 +151,12 @@ const LoginPage = () => {
                     {showPassword ? (
                       <EyeOff
                         size={20}
-                        className="text-teal-400 hover:text-teal-600 "
+                        className="text-rose-400 hover:text-rose-600 "
                       />
                     ) : (
                       <Eye
                         size={20}
-                        className="text-teal-400 hover:text-teal-600 h-4 "
+                        className="text-rose-400 hover:text-rose-600 h-4 "
                       />
                     )}
                   </button>
@@ -180,7 +180,7 @@ const LoginPage = () => {
             <div className="mt-6 text-center">
               <Link
                 href="/register"
-                className="text-teal-600 hover:text-teal-700 font-medium transition-colors duration-300"
+                className="text-rose-600 hover:text-rose-700 font-medium transition-colors duration-300"
               >
                 Don't have an account? Sign Up
               </Link>

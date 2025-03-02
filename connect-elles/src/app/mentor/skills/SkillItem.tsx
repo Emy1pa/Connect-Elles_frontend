@@ -31,7 +31,7 @@ const SkillItem: React.FC<SkillItemsProps> = ({ skill, onEdit, onDelete }) => {
     setIsEditing(false);
   };
   return (
-    <div className="p-6 rounded-2xl border border-teal-200 bg-teal-50 hover:scale-105 transition-all duration-300">
+    <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50 hover:scale-105 transition-all duration-300">
       <div className="flex flex-col">
         {isEditing ? (
           <div className="space-y-4">
@@ -41,7 +41,7 @@ const SkillItem: React.FC<SkillItemsProps> = ({ skill, onEdit, onDelete }) => {
               onChange={(e) =>
                 setEditedSkill({ ...editedSkill, title: e.target.value })
               }
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               placeholder="Skill title"
             />
             <textarea
@@ -52,7 +52,7 @@ const SkillItem: React.FC<SkillItemsProps> = ({ skill, onEdit, onDelete }) => {
                   description: e.target.value,
                 })
               }
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               placeholder="Skill description"
               rows={3}
             />
@@ -80,7 +80,7 @@ const SkillItem: React.FC<SkillItemsProps> = ({ skill, onEdit, onDelete }) => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="p-2 text-slate-600 hover:text-teal-500 transition-colors"
+                  className="p-2 text-slate-600 hover:text-rose-500 transition-colors"
                 >
                   <Pencil className="w-4 h-4" />
                 </button>

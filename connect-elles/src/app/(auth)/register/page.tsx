@@ -210,12 +210,12 @@ export const RegisterPage = () => {
                   {showPassword ? (
                     <EyeOff
                       size={20}
-                      className="text-teal-400 hover:text-teal-600"
+                      className="text-rose-400 hover:text-rose-600"
                     />
                   ) : (
                     <Eye
                       size={20}
-                      className="text-teal-400 hover:text-teal-600"
+                      className="text-rose-400 hover:text-rose-600"
                     />
                   )}
                 </button>

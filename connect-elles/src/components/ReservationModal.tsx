@@ -161,11 +161,11 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
           </button>
         </div>
         {successMessage && (
-          <div className="p-4 bg-emerald-50 border-l-4 border-emerald-500 flex items-start">
-            <CheckCircle className="w-5 h-5 text-emerald-500 mr-3 flex-shrink-0 mt-0.5" />
+          <div className="p-4 bg-rose-50 border-l-4 border-rose-500 flex items-start">
+            <CheckCircle className="w-5 h-5 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-medium text-emerald-800">Success!</h3>
-              <p className="text-emerald-700 text-sm">{successMessage}</p>
+              <h3 className="font-medium text-rose-800">Success!</h3>
+              <p className="text-rose-700 text-sm">{successMessage}</p>
             </div>
           </div>
         )}
@@ -184,7 +184,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
           <div className="w-1/2 overflow-y-auto custom-scroll max-h-96 border-r border-slate-200">
             <form className="p-6 space-y-4" onSubmit={handleSubmit}>
               <div className="flex items-center space-x-3">
-                <Calendar className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <Calendar className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <div className="w-full">
                   <label
                     htmlFor="reservationDate"
@@ -198,7 +198,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                     onChange={(e) => setReservationDate(e.target.value)}
                     disabled={isLoading}
                     id="reservationDate"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -209,7 +209,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             <form className="p-6 space-y-4" onSubmit={handleSubmit}>
               <div className="border-t-0 pt-0 pb-2">
                 <h3 className="text-lg font-semibold text-slate-800 mb-3 flex items-center">
-                  <CreditCard className="w-5 h-5 mr-2 text-emerald-500" />
+                  <CreditCard className="w-5 h-5 mr-2 text-rose-500" />
                   Payment Information
                 </h3>
               </div>
@@ -226,7 +226,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                   id="cardHolderName"
                   value={cardHolderName}
                   onChange={(e) => setCardHolderName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all text-sm"
                   placeholder="Name on card"
                   disabled={isLoading}
                 />
@@ -244,7 +244,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                   value={cardNumber}
                   onChange={handleCardNumberChange}
                   id="cardNumber"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all text-sm"
                   placeholder="1234 5678 9012 3456"
                   disabled={isLoading}
                   maxLength={19}
@@ -264,7 +264,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                     id="cardExpiry"
                     value={cardExpiry}
                     onChange={handleExpiryChange}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all text-sm"
                     placeholder="MM/YY"
                     maxLength={5}
                     disabled={isLoading}
@@ -283,7 +283,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                     value={cardCVV}
                     onChange={(e) => setCardCVV(e.target.value)}
                     id="cardCVV"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all text-sm"
                     placeholder="123"
                     maxLength={4}
                     disabled={isLoading}
@@ -294,7 +294,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 text-white font-medium shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transform hover:-translate-y-1 transition-all duration-300"
+                  className="w-full flex items-center justify-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-rose-600 to-green-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? "Processing..." : "Confirm Reservation"}

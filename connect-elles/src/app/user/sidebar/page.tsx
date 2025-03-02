@@ -1,13 +1,13 @@
 import React from "react";
-import { LayoutDashboard, Book, Briefcase, Brain } from "lucide-react";
+import { LayoutDashboard, Briefcase, Heart, Ticket } from "lucide-react";
 import Link from "next/link";
 
-const MentorSideBar = () => {
+const UserSideBar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-    { icon: Brain, label: "Skills", path: "/mentor/skills" },
-    { icon: Book, label: "Articles", path: "/mentor/blogs" },
-    { icon: Briefcase, label: "Services", path: "/mentor/services" },
+    { icon: Heart, label: "Favoris", path: "/user/favoris" },
+    { icon: Ticket, label: "Reservations", path: "/mentor/reservations" },
+    { icon: Briefcase, label: "Statistics", path: "/mentor/statistics" },
   ];
 
   return (
@@ -42,4 +42,4 @@ const MentorSideBar = () => {
   );
 };
 
-export default MentorSideBar;
+export default UserSideBar;

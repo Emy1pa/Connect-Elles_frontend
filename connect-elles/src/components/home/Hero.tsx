@@ -30,8 +30,8 @@ const Hero = () => {
       router.push("/admin");
     } else if (userRole === "mentor") {
       router.push("/mentor");
-    } else {
-      router.push("/");
+    } else if (userRole === "normal-user") {
+      router.push("/user");
     }
   };
   const featureCards = [

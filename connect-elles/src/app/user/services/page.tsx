@@ -62,16 +62,16 @@ const ServiceList = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-500 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-rose-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium mb-4">
             Our Services
           </span>
           <h1 className="text-4xl font-bold text-slate-800">
@@ -89,7 +89,7 @@ const ServiceList = () => {
                 placeholder="Search Services..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-rose-100 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 transition-colors duration-200"
               />
             </div>
 
@@ -97,7 +97,7 @@ const ServiceList = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="custom-scroll w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200 appearance-none bg-white overflow-y-auto"
+                className="custom-scroll w-full px-4 py-3 rounded-xl border border-rose-100 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 transition-colors duration-200 appearance-none bg-white overflow-y-auto"
               >
                 <option value="">All Categories</option>
                 {categories.map((category) => (
@@ -114,7 +114,7 @@ const ServiceList = () => {
               <select
                 value={availability}
                 onChange={(e) => setAvailability(e.target.value)}
-                className="custom-scroll w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200 appearance-none bg-white overflow-y-auto"
+                className="custom-scroll w-full px-4 py-3 rounded-xl border border-rose-100 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 transition-colors duration-200 appearance-none bg-white overflow-y-auto"
               >
                 <option value="">All Availability</option>
                 <option value="AVAILABLE">AVAILABLE</option>
@@ -132,7 +132,7 @@ const ServiceList = () => {
                 placeholder="Min Price"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200"
+                className="w-full px-4 py-3 rounded-xl border border-rose-100 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 transition-colors duration-200"
               />
             </div>
             <div className="w-full md:w-48">
@@ -141,7 +141,7 @@ const ServiceList = () => {
                 placeholder="Max Price"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-100 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-colors duration-200"
+                className="w-full px-4 py-3 rounded-xl border border-rose-100 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 transition-colors duration-200"
               />
             </div>
           </div>
@@ -164,7 +164,7 @@ const ServiceList = () => {
             {filteredServices.map((service) => (
               <div
                 key={service._id}
-                className="group bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-emerald-100/50 hover:shadow-emerald-200/50 transition-all duration-300 border border-emerald-100 flex flex-col h-full"
+                className="group bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl shadow-rose-100/50 hover:shadow-rose-200/50 transition-all duration-300 border border-rose-100 flex flex-col h-full"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -176,13 +176,13 @@ const ServiceList = () => {
                     alt={service.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
-                  <span className="absolute top-4 right-4 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm text-emerald-600 text-sm font-medium shadow-lg">
+                  <span className="absolute top-4 right-4 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm text-rose-600 text-sm font-medium shadow-lg">
                     {service.status}
                   </span>
                 </div>
 
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-emerald-600 transition-colors">
+                  <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-rose-600 transition-colors">
                     {service.title}
                   </h3>
 
@@ -195,16 +195,16 @@ const ServiceList = () => {
 
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center text-slate-600">
-                      <Clock className="w-4 h-4 mr-2 text-emerald-500" />
+                      <Clock className="w-4 h-4 mr-2 text-rose-500" />
                       {service.duration} Days
                     </div>
                     <div className="flex items-center text-slate-600">
-                      <Users className="w-4 h-4 mr-2 text-emerald-500" />
+                      <Users className="w-4 h-4 mr-2 text-rose-500" />
                       {service.numberOfPlaces} Places
                     </div>
                   </div>
 
-                  <div className="text-lg font-bold text-emerald-600 mb-4">
+                  <div className="text-lg font-bold text-rose-600 mb-4">
                     ${service.price}
                   </div>
 
@@ -217,7 +217,7 @@ const ServiceList = () => {
 
                   <button
                     onClick={() => router.push(`/user/services/${service._id}`)}
-                    className="inline-flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 text-white font-medium shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transform hover:-translate-y-1 transition-all duration-300 mt-4 self-start"
+                    className="inline-flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-rose-500 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300 mt-4 self-start"
                   >
                     More Details
                     <ArrowRight className="w-4 h-4 ml-2" />
