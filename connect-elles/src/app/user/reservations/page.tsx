@@ -22,6 +22,9 @@ interface Reservation {
 const UserReservations = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [cancelLoading, setCancelLoading] = useState<string | null>(null);
+
+  const userRole = localStorage.getItem("userRole") || "normal_user";
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
 
@@ -54,7 +57,38 @@ const UserReservations = () => {
 
     fetchUserReservations();
   }, [userId, token]);
-
+  const cancelReservation = async (reservationId: string) => {
+    if (!userId || !token) return;
+    try {
+      const response = await fetch(
+        `http://localhost:4000/reservations/${reservationId}/status/${userId}/${userRole}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: "CANCELED" }),
+        }
+      );
+      if (response.ok) {
+        setReservations((prevReservations) =>
+          prevReservations.map((reservation) =>
+            reservation._id === reservationId
+              ? { ...reservation, status: "CANCELLED" }
+              : reservation
+          )
+        );
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to cancel reservation: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error cancelling reservation:", error);
+    } finally {
+      setCancelLoading(null);
+    }
+  };
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "confirmed":
@@ -173,6 +207,20 @@ const UserReservations = () => {
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </div>
                       </Link>
+                      {reservation.status.toLowerCase() === "pending" && (
+                        <button
+                          onClick={() => cancelReservation(reservation._id)}
+                          disabled={cancelLoading === reservation._id}
+                          className="inline-flex items-center px-4 py-2 rounded-xl bg-red-100 text-red-600 font-medium hover:bg-red-200 transition-colors duration-300"
+                        >
+                          {cancelLoading === reservation._id ? (
+                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-500 rounded-full animate-spin mr-2"></div>
+                          ) : (
+                            <X className="w-4 h-4 mr-2" />
+                          )}
+                          Cancel
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
