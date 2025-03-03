@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Plus,
-  Loader2,
-  X,
-  Pencil,
-  Trash2,
-  Check,
-  FileSpreadsheet,
-} from "lucide-react";
+import { X, Pencil, Trash2, Check } from "lucide-react";
 import { Skill } from "@/app/utils/types/skill";
 
 interface SkillItemsProps {

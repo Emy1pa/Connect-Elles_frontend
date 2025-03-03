@@ -164,8 +164,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
           <div className="p-4 bg-rose-50 border-l-4 border-rose-500 flex items-start">
             <CheckCircle className="w-5 h-5 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-medium text-rose-800">Success!</h3>
-              <p className="text-rose-700 text-sm">{successMessage}</p>
+              <h3 className="font-medium text-green-800">Success!</h3>
+              <p className="text-green-700 text-sm">{successMessage}</p>
             </div>
           </div>
         )}
@@ -294,7 +294,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-rose-600 to-green-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
+                  className="w-full flex items-center justify-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-rose-600 to-rose-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? "Processing..." : "Confirm Reservation"}

@@ -4,10 +4,9 @@ import Link from "next/link";
 
 const UserSideBar = () => {
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+    { icon: Briefcase, label: "Statistics", path: "/user/statistics" },
     { icon: Heart, label: "Favoris", path: "/user/favoris" },
     { icon: Ticket, label: "Reservations", path: "/user/reservations" },
-    { icon: Briefcase, label: "Statistics", path: "/user/statistics" },
   ];
 
   return (

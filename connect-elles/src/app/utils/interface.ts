@@ -63,6 +63,12 @@ export interface Service {
     profileImage?: string;
   };
 }
+export interface Reservation {
+  _id: string;
+  reservationDate: string;
+  status: string;
+  service: Service | null;
+}
 
 export interface Favorite {
   _id: string;
@@ -92,4 +98,10 @@ export interface ValidationErrors {
   cardExpiry?: string;
   cardCVV?: string;
   general?: string;
+}
+
+export interface User {
+  _id: string;
+  fullName: string;
+  email: string;
 }

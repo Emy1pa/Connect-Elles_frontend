@@ -71,7 +71,7 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-rose-50 to-green-50">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-rose-50 to-rose-50">
         <div className="w-12 h-12 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin"></div>
       </div>
     );
@@ -79,13 +79,13 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
 
   if (!service) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-rose-50 to-green-50">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-rose-50 to-rose-50">
         <h2 className="text-2xl font-bold text-rose-500 mb-4">
           Service not found
         </h2>
         <button
           onClick={handleGoBack}
-          className="flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-green-500 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
+          className="flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-rose-500 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Services
@@ -117,7 +117,7 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
           </p>
           <button
             onClick={handleLogin}
-            className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-green-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
           >
             <LogIn className="w-5 h-5 mr-2" />
             Login to Reserve
@@ -145,7 +145,7 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
     return (
       <button
         onClick={handleReservation}
-        className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-green-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
+        className="w-full flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-600 text-white font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform hover:-translate-y-1 transition-all duration-300"
       >
         Réserver
       </button>

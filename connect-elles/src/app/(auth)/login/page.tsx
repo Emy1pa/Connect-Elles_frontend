@@ -68,7 +68,7 @@ const LoginPage = () => {
           } else if (decoded.userRole === "mentor") {
             router.push("/mentor");
           } else if (decoded.userRole === "normal-user") {
-            router.push("/user");
+            router.push("/user/statistics");
           }
         }, 1500);
       } else {
