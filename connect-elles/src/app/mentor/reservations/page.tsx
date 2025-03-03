@@ -1,17 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Calendar, ArrowRight, X } from "lucide-react";
+import { Calendar, ArrowRight, X, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Reservation } from "@/app/utils/interface";
 import { formatDate, getStatusColor } from "@/app/utils/constants";
-
-const UserReservations = () => {
+import { Service } from "@/app/utils/interface";
+interface Reservation {
+  _id: string;
+  reservationDate: string;
+  reservationStatus: string;
+  service: Service | null;
+}
+const MentorReservations = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [cancelLoading, setCancelLoading] = useState<string | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState<string | null>(null);
 
-  const userRole = localStorage.getItem("userRole") || "normal_user";
+  const userRole = localStorage.getItem("userRole") || "mentor";
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
 
@@ -22,7 +27,7 @@ const UserReservations = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:4000/reservations/user/${userId}`,
+          `http://localhost:4000/reservations/mentor/${userId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -44,7 +49,7 @@ const UserReservations = () => {
 
     fetchUserReservations();
   }, [userId, token]);
-  const cancelReservation = async (reservationId: string) => {
+  const confirmReservation = async (reservationId: string) => {
     if (!userId || !token) return;
     try {
       const response = await fetch(
@@ -55,25 +60,25 @@ const UserReservations = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status: "CANCELED" }),
+          body: JSON.stringify({ status: "CONFIRMED" }),
         }
       );
       if (response.ok) {
         setReservations((prevReservations) =>
           prevReservations.map((reservation) =>
             reservation._id === reservationId
-              ? { ...reservation, status: "CANCELLED" }
+              ? { ...reservation, reservationStatus: "CONFIRMED" }
               : reservation
           )
         );
       } else {
         const errorData = await response.json();
-        alert(`Failed to cancel reservation: ${errorData.message}`);
+        alert(`Failed to confirm reservation: ${errorData.message}`);
       }
     } catch (error) {
-      console.error("Error cancelling reservation:", error);
+      console.error("Error confirming reservation:", error);
     } finally {
-      setCancelLoading(null);
+      setConfirmLoading(null);
     }
   };
 
@@ -94,7 +99,7 @@ const UserReservations = () => {
               No Reservations Yet
             </h2>
             <p className="text-slate-600 mb-8">
-              You haven't made any service reservations.
+              You haven't received any service reservations.
             </p>
             <Link href="/user/services">
               <div className="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300">
@@ -139,10 +144,10 @@ const UserReservations = () => {
                     <div className="absolute top-3 left-3">
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                          reservation.status
+                          reservation.reservationStatus
                         )}`}
                       >
-                        {reservation.status}
+                        {reservation.reservationStatus}
                       </span>
                     </div>
                   </div>
@@ -173,20 +178,22 @@ const UserReservations = () => {
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </div>
                       </Link>
-                      {reservation.status.toLowerCase() === "pending" && (
-                        <button
-                          onClick={() => cancelReservation(reservation._id)}
-                          disabled={cancelLoading === reservation._id}
-                          className="inline-flex items-center px-4 py-2 rounded-xl bg-red-100 text-red-600 font-medium hover:bg-red-200 transition-colors duration-300"
-                        >
-                          {cancelLoading === reservation._id ? (
-                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-500 rounded-full animate-spin mr-2"></div>
-                          ) : (
-                            <X className="w-4 h-4 mr-2" />
-                          )}
-                          Cancel
-                        </button>
-                      )}
+                      {reservation.reservationStatus &&
+                        reservation.reservationStatus.toLowerCase() ===
+                          "pending" && (
+                          <button
+                            onClick={() => confirmReservation(reservation._id)}
+                            disabled={confirmLoading === reservation._id}
+                            className="inline-flex ml-6 items-center px-4 py-2 rounded-xl bg-green-100 text-green-600 font-medium hover:bg-green-200 transition-colors duration-300"
+                          >
+                            {confirmLoading === reservation._id ? (
+                              <div className="w-4 h-4 border-2 border-green-200 border-t-green-500 rounded-full animate-spin mr-2"></div>
+                            ) : (
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                            )}
+                            Confirm
+                          </button>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -198,4 +205,4 @@ const UserReservations = () => {
   );
 };
 
-export default UserReservations;
+export default MentorReservations;

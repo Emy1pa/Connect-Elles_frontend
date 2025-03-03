@@ -31,7 +31,7 @@ const Hero = () => {
     } else if (userRole === "mentor") {
       router.push("/mentor");
     } else if (userRole === "normal-user") {
-      router.push("/user");
+      router.push("/user/statistics");
     }
   };
   const featureCards = [
