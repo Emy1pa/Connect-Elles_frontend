@@ -4,10 +4,9 @@ import Link from "next/link";
 
 const Sidebar = () => {
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: FolderOpen, label: "Categories", path: "/admin/categories" },
     { icon: Users, label: "Users", path: "/users" },
-    { icon: BarChart, label: "Analytics", path: "/analytics" },
+    { icon: BarChart, label: "Statistics", path: "/admin/statistics" },
   ];
 
   return (
