@@ -89,7 +89,9 @@ const BlogsList = () => {
           formData.append(key, value.toString());
         }
       });
-
+      if (data.blogImage) {
+        formData.append("blogImage", data.blogImage);
+      }
       if (editingBlog) {
         const updatedBlog = await editBlog(
           editingBlog._id.toString(),

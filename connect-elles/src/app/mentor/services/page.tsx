@@ -341,7 +341,7 @@ const ServicesList = () => {
                   <input
                     type="number"
                     {...register("numberOfPlaces", { valueAsNumber: true })}
-                    min="0"
+                    min="1"
                     className={inputClass}
                   />
                   {errors.numberOfPlaces && (

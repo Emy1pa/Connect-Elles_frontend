@@ -4,26 +4,14 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { jwtDecode } from "jwt-decode";
-import { DecodedToken } from "@/app/utils/interface";
-
-const girls = require("../../../../public/girl.jpg");
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { LoginFormData, loginSchema } from "@/app/utils/types/login";
+import { useLogin } from "@/app/hooks/useLogin";
+import { girls } from "@/app/utils/images";
 
 const LoginPage = () => {
-  const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { login, isSubmitting } = useLogin();
 
   const {
     register,
@@ -38,48 +26,7 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    if (isSubmitting) return;
-
-    try {
-      setIsSubmitting(true);
-      const response = await fetch(
-        "http://localhost:4000/api/users/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
-        const token = result.accessToken;
-        localStorage.setItem("token", token);
-        const decoded: DecodedToken = jwtDecode(token);
-        localStorage.setItem("userId", decoded.id.toString());
-        localStorage.setItem("userRole", decoded.userRole);
-        toast.success("Login successful!");
-        setTimeout(() => {
-          if (decoded.userRole === "admin") {
-            router.push("/admin");
-          } else if (decoded.userRole === "mentor") {
-            router.push("/mentor");
-          } else if (decoded.userRole === "normal-user") {
-            router.push("/user/statistics");
-          }
-        }, 1500);
-      } else {
-        throw new Error(result.message || "Login failed");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Invalid email or password");
-    } finally {
-      setIsSubmitting(false);
-    }
+    await login(data);
   };
 
   const inputClass =
@@ -109,16 +56,12 @@ const LoginPage = () => {
           <div className="p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-rose-800">Welcome Back</h1>
-              <p className="mt-2 text-rose-600">
-                Continue your journey with us
-              </p>
+              <p className="mt-2 text-rose-600">Continue your journey with us</p>
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Email
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Email</label>
                 <input
                   {...register("email")}
                   type="email"
@@ -126,16 +69,12 @@ const LoginPage = () => {
                   className={inputClass}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.email.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
                 )}
               </div>
 
               <div className="relative">
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Password
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Password</label>
                 <div className="relative">
                   <input
                     {...register("password")}
@@ -149,30 +88,18 @@ const LoginPage = () => {
                     className="absolute right-3 top-1/2 -translate-y-1/2"
                   >
                     {showPassword ? (
-                      <EyeOff
-                        size={20}
-                        className="text-rose-400 hover:text-rose-600 "
-                      />
+                      <EyeOff size={20} className="text-rose-400 hover:text-rose-600 " />
                     ) : (
-                      <Eye
-                        size={20}
-                        className="text-rose-400 hover:text-rose-600 h-4 "
-                      />
+                      <Eye size={20} className="text-rose-400 hover:text-rose-600 h-4 " />
                     )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
                 )}
               </div>
 
-              <button
-                type="submit"
-                className={buttonClass}
-                disabled={isSubmitting}
-              >
+              <button type="submit" className={buttonClass} disabled={isSubmitting}>
                 {isSubmitting ? "Signing In..." : "Sign In"}
               </button>
             </form>
@@ -191,5 +118,4 @@ const LoginPage = () => {
     </div>
   );
 };
-
 export default LoginPage;
