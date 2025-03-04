@@ -27,9 +27,9 @@ const Hero = () => {
     const userRole = localStorage.getItem("userRole");
 
     if (userRole === "admin") {
-      router.push("/admin");
+      router.push("/admin/statistics");
     } else if (userRole === "mentor") {
-      router.push("/mentor");
+      router.push("/mentor/statistics");
     } else if (userRole === "normal-user") {
       router.push("/user/statistics");
     }
