@@ -25,10 +25,13 @@ const SkillsList = () => {
   useEffect(() => {
     fetchSkills();
   }, []);
+  const userId = localStorage.getItem("userId");
 
   const fetchSkills = async () => {
     try {
-      const response = await axios.get<Skill[]>("http://localhost:4000/api/skills");
+      const response = await axios.get<Skill[]>(
+        `http://localhost:4000/api/skills/mentor/${userId}`
+      );
       getAuthHeaders();
       setSkills(response.data);
 
