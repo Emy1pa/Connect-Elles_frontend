@@ -29,7 +29,7 @@ const Navbar = () => {
     }
   };
   const navItems = [
-    { label: "Mentors", href: "/mentprs" },
+    { label: "Mentors", href: "/user/mentors" },
     { label: "Blogs", href: "/user/blogs" },
     { label: "Services", href: "/user/services" },
   ];
@@ -107,11 +107,7 @@ const Navbar = () => {
               className="p-2 rounded-lg text-slate-700 hover:text-pink-600 hover:bg-pink-50 
                        transition-all duration-300"
             >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
