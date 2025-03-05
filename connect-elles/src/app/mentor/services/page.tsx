@@ -2,20 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Loader2, X, Upload } from "lucide-react";
 import Image from "next/image";
-import {
-  Service,
-  ServiceFormData,
-  serviceSchema,
-} from "@/app/utils/types/service";
+import { Service, ServiceFormData, serviceSchema } from "@/app/utils/types/service";
 import { Category } from "@/app/utils/types/service";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createService,
-  editService,
-  deleteService,
-  getAuthHeaders,
-} from "./service-action";
+import { createService, editService, deleteService, getAuthHeaders } from "./service-action";
 import ServiceItem from "./ServiceItem";
 
 const ServicesList = () => {
@@ -41,10 +32,11 @@ const ServicesList = () => {
     fetchServices();
     fetchCategories();
   }, []);
+  const userId = localStorage.getItem("userId");
 
   const fetchServices = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/services", {
+      const response = await fetch(`http://localhost:4000/api/services/mentor/${userId}`, {
         headers: getAuthHeaders().headers,
       });
       const data = await response.json();
@@ -100,9 +92,7 @@ const ServicesList = () => {
       if (editingService) {
         const updatedService = await editService(editingService._id, formData);
         setServices((prev) =>
-          prev.map((service) =>
-            service._id === editingService._id ? updatedService : service
-          )
+          prev.map((service) => (service._id === editingService._id ? updatedService : service))
         );
       } else {
         const newService = await createService(formData);
@@ -131,11 +121,7 @@ const ServicesList = () => {
       numberOfPlaces: service.numberOfPlaces,
     });
 
-    setPreviewImage(
-      service.serviceImage
-        ? `http://localhost:4000${service.serviceImage}`
-        : null
-    );
+    setPreviewImage(service.serviceImage ? `http://localhost:4000${service.serviceImage}` : null);
     setIsModalOpen(true);
   };
 
@@ -143,9 +129,7 @@ const ServicesList = () => {
     if (confirm("Are you sure you want to delete this service?")) {
       try {
         await deleteService(serviceId);
-        setServices((prev) =>
-          prev.filter((service) => service._id !== serviceId)
-        );
+        setServices((prev) => prev.filter((service) => service._id !== serviceId));
       } catch (error) {
         console.error("Error deleting service:", error);
         alert("Failed to delete service");
@@ -181,9 +165,7 @@ const ServicesList = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium">
             Services
           </span>
-          <h2 className="mt-2 text-3xl font-bold text-slate-800">
-            Manage Your Services
-          </h2>
+          <h2 className="mt-2 text-3xl font-bold text-slate-800">Manage Your Services</h2>
         </div>
 
         <button onClick={() => setIsModalOpen(true)} className={buttonClass}>
@@ -194,9 +176,7 @@ const ServicesList = () => {
 
       {services.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 bg-rose-50 rounded-2xl border border-rose-200">
-          <div className="text-xl font-medium text-slate-800 mb-2">
-            No Services Found
-          </div>
+          <div className="text-xl font-medium text-slate-800 mb-2">No Services Found</div>
           <p className="text-slate-600 text-center mb-4">
             Start by creating your first service using the button above.
           </p>
@@ -230,21 +210,15 @@ const ServicesList = () => {
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Title
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Title</label>
                 <input {...register("title")} className={inputClass} />
                 {errors.title && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.title.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Category
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Category</label>
                 <select {...register("categoryId")} className={inputClass}>
                   <option value="">Select a category</option>
                   {categories.map((category) => (
@@ -254,9 +228,7 @@ const ServicesList = () => {
                   ))}
                 </select>
                 {errors.categoryId && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.categoryId.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.categoryId.message}</p>
                 )}
               </div>
 
@@ -310,16 +282,12 @@ const ServicesList = () => {
                     className={inputClass}
                   />
                   {errors.duration && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.duration.message}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.duration.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-rose-700 mb-1">
-                    Price ($)
-                  </label>
+                  <label className="block text-sm font-medium text-rose-700 mb-1">Price ($)</label>
                   <input
                     type="number"
                     {...register("price", { valueAsNumber: true })}
@@ -328,9 +296,7 @@ const ServicesList = () => {
                     className={inputClass}
                   />
                   {errors.price && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.price.message}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.price.message}</p>
                   )}
                 </div>
 
@@ -345,51 +311,35 @@ const ServicesList = () => {
                     className={inputClass}
                   />
                   {errors.numberOfPlaces && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.numberOfPlaces.message}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.numberOfPlaces.message}</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  {...register("description")}
-                  className={inputClass}
-                  rows={6}
-                />
+                <label className="block text-sm font-medium text-rose-700 mb-1">Description</label>
+                <textarea {...register("description")} className={inputClass} rows={6} />
                 {errors.description && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.description.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Status
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Status</label>
                 <select {...register("status")} className={inputClass}>
                   <option value="AVAILABLE">Available</option>
                   <option value="UNAVAILABLE">Unavailable</option>
                   <option value="ARCHIVED">Archived</option>
                 </select>
                 {errors.status && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.status.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.status.message}</p>
                 )}
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`${buttonClass} ${
-                  isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`${buttonClass} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {isSubmitting ? (
                   <>
