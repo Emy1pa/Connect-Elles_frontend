@@ -4,7 +4,6 @@ import { Eye, EyeOff, Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterFormData, registerSchema } from "@/app/utils/types/register";
 import { girls } from "@/app/utils/images";
