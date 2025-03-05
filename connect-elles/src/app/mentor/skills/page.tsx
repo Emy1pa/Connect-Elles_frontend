@@ -28,9 +28,7 @@ const SkillsList = () => {
 
   const fetchSkills = async () => {
     try {
-      const response = await axios.get<Skill[]>(
-        "http://localhost:4000/api/skills"
-      );
+      const response = await axios.get<Skill[]>("http://localhost:4000/api/skills");
       getAuthHeaders();
       setSkills(response.data);
 
@@ -63,11 +61,7 @@ const SkillsList = () => {
     setIsSubmitting(false);
   };
 
-  const handleEditSkill = async (
-    skillId: string,
-    newSkill: string,
-    newDescription: string
-  ) => {
+  const handleEditSkill = async (skillId: string, newSkill: string, newDescription: string) => {
     try {
       const response = await editSkill(skillId, newSkill, newDescription);
       setSkills((prevSkills) =>
@@ -86,9 +80,7 @@ const SkillsList = () => {
         const skillId = skill._id;
 
         await deleteSkill(skill._id);
-        setSkills((prevSkills) =>
-          prevSkills.filter((s) => s._id !== skill._id)
-        );
+        setSkills((prevSkills) => prevSkills.filter((s) => s._id !== skill._id));
       } catch (error) {
         console.error("Error deleting skill:", error);
         alert("Failed to delete skill. Please try again.");
@@ -111,9 +103,7 @@ const SkillsList = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium">
             Skills
           </span>
-          <h2 className="mt-2 text-3xl font-bold text-slate-800">
-            Browse Our Skills
-          </h2>
+          <h2 className="mt-2 text-3xl font-bold text-slate-800">Browse Our Skills</h2>
         </div>
 
         <button
@@ -127,9 +117,7 @@ const SkillsList = () => {
 
       {skills.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 bg-rose-50 rounded-2xl border border-rose-200">
-          <div className="text-xl font-medium text-slate-800 mb-2">
-            No Skills Found
-          </div>
+          <div className="text-xl font-medium text-slate-800 mb-2">No Skills Found</div>
           <p className="text-slate-600 text-center mb-4">
             Start by adding your first skill using the button above.
           </p>
@@ -151,9 +139,7 @@ const SkillsList = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-slate-800">
-                Add New Skill
-              </h3>
+              <h3 className="text-xl font-bold text-slate-800">Add New Skill</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600"
@@ -168,30 +154,20 @@ const SkillsList = () => {
                 placeholder="Skill title"
                 {...register("title")}
                 value={newSkill.title}
-                onChange={(e) =>
-                  setNewSkill({ ...newSkill, title: e.target.value })
-                }
+                onChange={(e) => setNewSkill({ ...newSkill, title: e.target.value })}
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               />
-              {errors.title && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.title.message}
-                </p>
-              )}
+              {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>}
               <textarea
                 placeholder="Skill description"
                 {...register("description")}
                 value={newSkill.description}
-                onChange={(e) =>
-                  setNewSkill({ ...newSkill, description: e.target.value })
-                }
+                onChange={(e) => setNewSkill({ ...newSkill, description: e.target.value })}
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
                 rows={4}
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.description.message}
-                </p>
+                <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
               )}
               <button
                 type="submit"

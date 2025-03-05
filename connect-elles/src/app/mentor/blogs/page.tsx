@@ -6,12 +6,7 @@ import { Blog, BlogFormData, blogSchema } from "@/app/utils/types/blog";
 import { Category } from "@/app/utils/types/category";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createBlog,
-  editBlog,
-  deleteBlog,
-  getAuthHeaders,
-} from "./blog-action";
+import { createBlog, editBlog, deleteBlog, getAuthHeaders } from "./blog-action";
 import BlogItem from "./BlogItem";
 
 const BlogsList = () => {
@@ -37,10 +32,11 @@ const BlogsList = () => {
     fetchBlogs();
     fetchCategories();
   }, []);
+  const userId = localStorage.getItem("userId");
 
   const fetchBlogs = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/blogs", {
+      const response = await fetch(`http://localhost:4000/api/blogs/mentor/${userId}`, {
         headers: getAuthHeaders().headers,
       });
       const data = await response.json();
@@ -93,15 +89,8 @@ const BlogsList = () => {
         formData.append("blogImage", data.blogImage);
       }
       if (editingBlog) {
-        const updatedBlog = await editBlog(
-          editingBlog._id.toString(),
-          formData
-        );
-        setBlogs((prev) =>
-          prev.map((blog) =>
-            blog._id === editingBlog._id ? updatedBlog : blog
-          )
-        );
+        const updatedBlog = await editBlog(editingBlog._id.toString(), formData);
+        setBlogs((prev) => prev.map((blog) => (blog._id === editingBlog._id ? updatedBlog : blog)));
       } else {
         const newBlog = await createBlog(formData);
         setBlogs((prev) => [...prev, newBlog]);
@@ -127,9 +116,7 @@ const BlogsList = () => {
       blogImage: null,
     });
 
-    setPreviewImage(
-      blog.blogImage ? `http://localhost:4000${blog.blogImage}` : null
-    );
+    setPreviewImage(blog.blogImage ? `http://localhost:4000${blog.blogImage}` : null);
     setIsModalOpen(true);
   };
 
@@ -173,9 +160,7 @@ const BlogsList = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium">
             Blogs
           </span>
-          <h2 className="mt-2 text-3xl font-bold text-slate-800">
-            Manage Your Blogs
-          </h2>
+          <h2 className="mt-2 text-3xl font-bold text-slate-800">Manage Your Blogs</h2>
         </div>
 
         <button onClick={() => setIsModalOpen(true)} className={buttonClass}>
@@ -186,9 +171,7 @@ const BlogsList = () => {
 
       {blogs.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 bg-rose-50 rounded-2xl border border-rose-200">
-          <div className="text-xl font-medium text-slate-800 mb-2">
-            No Blogs Found
-          </div>
+          <div className="text-xl font-medium text-slate-800 mb-2">No Blogs Found</div>
           <p className="text-slate-600 text-center mb-4">
             Start by creating your first blog using the button above.
           </p>
@@ -196,12 +179,7 @@ const BlogsList = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
-            <BlogItem
-              key={blog._id}
-              blog={blog}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <BlogItem key={blog._id} blog={blog} onEdit={handleEdit} onDelete={handleDelete} />
           ))}
         </div>
       )}
@@ -222,21 +200,15 @@ const BlogsList = () => {
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Title
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Title</label>
                 <input {...register("title")} className={inputClass} />
                 {errors.title && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.title.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Category
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Category</label>
                 <select {...register("categoryId")} className={inputClass}>
                   <option value="">Select a category</option>
                   {categories.map((category) => (
@@ -246,16 +218,12 @@ const BlogsList = () => {
                   ))}
                 </select>
                 {errors.categoryId && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.categoryId.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.categoryId.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Blog Image
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Blog Image</label>
                 <div className="relative">
                   <input
                     type="file"
@@ -281,9 +249,7 @@ const BlogsList = () => {
                     ) : (
                       <div className="text-center">
                         <Upload className="mx-auto h-8 w-8 text-rose-400" />
-                        <span className="mt-2 block text-sm text-rose-600">
-                          Upload blog image
-                        </span>
+                        <span className="mt-2 block text-sm text-rose-600">Upload blog image</span>
                       </div>
                     )}
                   </label>
@@ -291,59 +257,37 @@ const BlogsList = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Summary
-                </label>
-                <textarea
-                  {...register("summary")}
-                  className={inputClass}
-                  rows={3}
-                />
+                <label className="block text-sm font-medium text-rose-700 mb-1">Summary</label>
+                <textarea {...register("summary")} className={inputClass} rows={3} />
                 {errors.summary && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.summary.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.summary.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Content
-                </label>
-                <textarea
-                  {...register("content")}
-                  className={inputClass}
-                  rows={6}
-                />
+                <label className="block text-sm font-medium text-rose-700 mb-1">Content</label>
+                <textarea {...register("content")} className={inputClass} rows={6} />
                 {errors.content && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.content.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.content.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-rose-700 mb-1">
-                  Status
-                </label>
+                <label className="block text-sm font-medium text-rose-700 mb-1">Status</label>
                 <select {...register("status")} className={inputClass}>
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
                   <option value="ARCHIVED">Archived</option>
                 </select>
                 {errors.status && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.status.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-500">{errors.status.message}</p>
                 )}
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`${buttonClass} ${
-                  isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`${buttonClass} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {isSubmitting ? (
                   <>
