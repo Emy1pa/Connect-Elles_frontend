@@ -60,7 +60,6 @@ const AdminStatisticsDashboard = () => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">My Statistics</h2>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-pink-50 rounded-xl p-4 border-l-4 border-pink-400">
           <div className="flex items-center justify-between mb-2">
@@ -71,7 +70,6 @@ const AdminStatisticsDashboard = () => {
           </div>
           <p className="text-3xl font-bold text-pink-600">{favorites ? favorites.count : 0}</p>
         </div>
-
         <div className="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-400">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium text-slate-700">Comments</h3>
@@ -81,7 +79,6 @@ const AdminStatisticsDashboard = () => {
           </div>
           <p className="text-3xl font-bold text-blue-600">{comments ? comments.count : 0}</p>
         </div>
-
         <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-400">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium text-slate-700">Reservations</h3>
@@ -92,7 +89,6 @@ const AdminStatisticsDashboard = () => {
           <p className="text-3xl font-bold text-purple-600">{reservations ? reservations.count : 0}</p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-amber-50 rounded-xl p-4 border-l-4 border-amber-400">
           <div className="flex items-center justify-between mb-2">
@@ -103,7 +99,6 @@ const AdminStatisticsDashboard = () => {
           </div>
           <p className="text-3xl font-bold text-amber-600">{blogs ? blogs.count : 0}</p>
         </div>
-
         <div className="bg-emerald-50 rounded-xl p-4 border-l-4 border-emerald-400">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium text-slate-700">Services</h3>
@@ -113,7 +108,6 @@ const AdminStatisticsDashboard = () => {
           </div>
           <p className="text-3xl font-bold text-emerald-600">{services ? services.count : 0}</p>
         </div>
-
         <div className="bg-indigo-50 rounded-xl p-4 border-l-4 border-indigo-400">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium text-slate-700">Skills</h3>
@@ -124,7 +118,6 @@ const AdminStatisticsDashboard = () => {
           <p className="text-3xl font-bold text-indigo-600">{skills ? skills.count : 0}</p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-teal-50 rounded-xl p-4 border-l-4 border-teal-400">
           <div className="flex items-center justify-between mb-2">
@@ -136,7 +129,6 @@ const AdminStatisticsDashboard = () => {
           <p className="text-3xl font-bold text-teal-600">{categories ? categories.count : 0}</p>
         </div>
       </div>
-
       {users && (
         <div className="mt-6">
           <h3 className="text-lg font-medium text-slate-700 mb-3">Users</h3>

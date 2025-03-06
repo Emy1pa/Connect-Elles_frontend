@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
 import { Blog } from "@/app/utils/types/blog";
+import { API_URL } from "@/app/utils/constants";
 
 interface BlogItemProps {
   blog: Blog;
@@ -11,7 +12,7 @@ interface BlogItemProps {
 
 const BlogItem: React.FC<BlogItemProps> = ({ blog, onEdit, onDelete }) => {
   const imageLoader = ({ src }: { src: string }) => {
-    return `http://localhost:4000${src}`;
+    return `${API_URL}${src}`;
   };
 
   return (
@@ -35,9 +36,7 @@ const BlogItem: React.FC<BlogItemProps> = ({ blog, onEdit, onDelete }) => {
         </div>
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
-            blog.status === "PUBLISHED"
-              ? "bg-green-100 text-green-800"
-              : "bg-yellow-100 text-yellow-800"
+            blog.status === "PUBLISHED" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
           }`}
         >
           {blog.status}
@@ -47,14 +46,9 @@ const BlogItem: React.FC<BlogItemProps> = ({ blog, onEdit, onDelete }) => {
       <p className="text-slate-600 mb-4 line-clamp-3">{blog.summary}</p>
 
       <div className="flex justify-between items-center">
-        <span className="text-sm text-slate-500">
-          {new Date(blog.createdAt).toLocaleDateString()}
-        </span>
+        <span className="text-sm text-slate-500">{new Date(blog.createdAt).toLocaleDateString()}</span>
         <div className="flex gap-2">
-          <button
-            onClick={() => onEdit(blog)}
-            className="p-2 text-slate-600 hover:text-rose-500 transition-colors"
-          >
+          <button onClick={() => onEdit(blog)} className="p-2 text-slate-600 hover:text-rose-500 transition-colors">
             <Pencil className="w-4 h-4" />
           </button>
           <button
