@@ -4,13 +4,11 @@ import axios from "axios";
 import { Plus, Loader2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Category,
-  CategoryFormData,
-  categorySchema,
-} from "@/app/utils/types/category";
-import { deleteCategory, editCategory } from "./category-actions";
+import { CategoryFormData, categorySchema } from "@/app/utils/types/category";
+import { addCategory, deleteCategory, editCategory, loadCategories } from "./category-actions";
 import CategoryItem from "./CategoryItem";
+import { Category } from "@/app/utils/interface";
+import { API_URL, getAuthHeaders } from "@/app/utils/constants";
 
 const CategoriesList = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -32,10 +30,8 @@ const CategoriesList = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get<Category[]>(
-        "http://localhost:4000/api/categories"
-      );
-      setCategories(response.data);
+      const response = await loadCategories();
+      setCategories(response);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -44,19 +40,9 @@ const CategoriesList = () => {
   };
 
   const onSubmit = async (data: CategoryFormData) => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.post<Category>(
-        "http://localhost:4000/api/categories",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setCategories((prev) => [...prev, response.data]);
+      const newCategory = await addCategory(data);
+      setCategories((prev) => [...prev, newCategory]);
       reset();
       setIsModalOpen(false);
     } catch (error) {
@@ -67,9 +53,7 @@ const CategoriesList = () => {
   const handleEditCategory = async (categoryId: string, newTitle: string) => {
     try {
       const updatedCategory = await editCategory(categoryId, newTitle);
-      setCategories((prev) =>
-        prev.map((cat) => (cat._id === categoryId ? updatedCategory : cat))
-      );
+      setCategories((prev) => prev.map((cat) => (cat._id === categoryId ? updatedCategory : cat)));
     } catch (error) {
       alert("Failed to update category. Please try again.");
     }
@@ -101,9 +85,7 @@ const CategoriesList = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-sm font-medium">
             Categories
           </span>
-          <h2 className="mt-2 text-3xl font-bold text-slate-800">
-            Browse Our Categories
-          </h2>
+          <h2 className="mt-2 text-3xl font-bold text-slate-800">Browse Our Categories</h2>
         </div>
 
         <button
@@ -117,9 +99,7 @@ const CategoriesList = () => {
 
       {categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 bg-pink-50 rounded-2xl border border-pink-200">
-          <div className="text-xl font-medium text-slate-800 mb-2">
-            No Categories Found
-          </div>
+          <div className="text-xl font-medium text-slate-800 mb-2">No Categories Found</div>
           <p className="text-slate-600 text-center mb-4">
             Start by adding your first category using the button above.
           </p>
@@ -147,9 +127,7 @@ const CategoriesList = () => {
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-xl font-bold text-slate-800 mb-4">
-              Add New Category
-            </h3>
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Add New Category</h3>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
@@ -159,11 +137,7 @@ const CategoriesList = () => {
                   {...register("title")}
                   className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
-                {errors.title && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.title.message}
-                  </p>
-                )}
+                {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>}
               </div>
 
               <button
@@ -171,11 +145,7 @@ const CategoriesList = () => {
                 disabled={isSubmitting}
                 className="w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg hover:shadow-lg hover:shadow-pink-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               >
-                {isSubmitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Plus className="w-4 h-4" />
-                )}
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Add Category
               </button>
             </form>

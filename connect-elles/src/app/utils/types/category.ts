@@ -4,8 +4,3 @@ export const categorySchema = z.object({
 });
 
 export type CategoryFormData = z.infer<typeof categorySchema>;
-
-export interface Category {
-  _id: string;
-  title: string;
-}

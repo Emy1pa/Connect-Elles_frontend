@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutDashboard, FolderOpen, Users, BarChart } from "lucide-react";
+import { FolderOpen, Users, BarChart } from "lucide-react";
 import Link from "next/link";
 
 const Sidebar = () => {
