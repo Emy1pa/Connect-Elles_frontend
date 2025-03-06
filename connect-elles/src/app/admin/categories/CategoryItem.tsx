@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Pencil, Trash2, Check, X } from "lucide-react";
-import { Category } from "@/app/utils/types/category";
+import { Category } from "@/app/utils/interface";
 
 interface CategoryItemProps {
   category: Category;
@@ -8,11 +8,7 @@ interface CategoryItemProps {
   onDelete: (category: Category) => Promise<void>;
 }
 
-const CategoryItem: React.FC<CategoryItemProps> = ({
-  category,
-  onEdit,
-  onDelete,
-}) => {
+const CategoryItem: React.FC<CategoryItemProps> = ({ category, onEdit, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(category.title);
 
@@ -51,9 +47,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
           </div>
         ) : (
           <div className="flex justify-between items-center">
-            <h3 className="text-xl font-semibold text-slate-800 mb-3">
-              {category.title}
-            </h3>
+            <h3 className="text-xl font-semibold text-slate-800 mb-3">{category.title}</h3>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsEditing(true)}

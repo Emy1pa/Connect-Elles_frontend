@@ -24,3 +24,17 @@ export const formatDate = (dateString: string) => {
 };
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.log("Token is missing");
+    return {};
+  }
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  };
+};
