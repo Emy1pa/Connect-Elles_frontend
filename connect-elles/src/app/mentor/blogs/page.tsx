@@ -5,7 +5,8 @@ import { Blog, BlogFormData } from "@/app/utils/types/blog";
 import BlogItem from "./BlogItem";
 import BlogForm from "./BlogForm";
 import { Category } from "@/app/utils/interface";
-import { createBlog, deleteBlog, editBlog, fetchBlogs, fetchCategories } from "./blog-action";
+import { createBlog, deleteBlog, editBlog, fetchBlogs } from "./blog-action";
+import { fetchCategories } from "@/app/utils/constants";
 
 const BlogsList = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);

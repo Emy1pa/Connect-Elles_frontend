@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutDashboard, Book, Briefcase, Brain, Ticket } from "lucide-react";
+import { Book, Briefcase, Brain, Ticket } from "lucide-react";
 import Link from "next/link";
 
 const MentorSideBar = () => {

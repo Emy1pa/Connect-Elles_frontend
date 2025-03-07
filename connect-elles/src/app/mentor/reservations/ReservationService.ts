@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { API_URL } from "@/app/utils/constants";
-import { Reservation, Service } from "@/app/utils/interface";
-
+import { Reservation } from "@/app/utils/interface";
+import axios from "axios";
 export const useReservations = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,17 +17,14 @@ export const useReservations = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/reservations/mentor/${userId}`, {
+      const response = await axios.get(`${API_URL}/reservations/mentor/${userId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setReservations(data);
-      }
+      setReservations(response.data);
     } catch (error) {
       console.error("Error fetching reservations:", error);
     } finally {
@@ -44,24 +41,21 @@ export const useReservations = () => {
 
     setConfirmLoading(reservationId);
     try {
-      const response = await fetch(`${API_URL}/reservations/${reservationId}/status/${userId}/${userRole}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: "CONFIRMED" }),
-      });
-      if (response.ok) {
-        setReservations((prevReservations) =>
-          prevReservations.map((reservation) =>
-            reservation._id === reservationId ? { ...reservation, reservationStatus: "CONFIRMED" } : reservation
-          )
-        );
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to confirm reservation: ${errorData.message}`);
-      }
+      await axios.patch(
+        `${API_URL}/reservations/${reservationId}/status/${userId}/${userRole}`,
+        { status: "CONFIRMED" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setReservations((prevReservations) =>
+        prevReservations.map((reservation) =>
+          reservation._id === reservationId ? { ...reservation, reservationStatus: "CONFIRMED" } : reservation
+        )
+      );
     } catch (error) {
       console.error("Error confirming reservation:", error);
     } finally {

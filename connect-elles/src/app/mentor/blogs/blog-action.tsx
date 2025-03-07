@@ -55,15 +55,3 @@ export const fetchBlogs = async (userId: string): Promise<Blog[]> => {
     throw new Error("Failed to fetch blogs");
   }
 };
-
-export const fetchCategories = async (): Promise<Category[]> => {
-  try {
-    const response = await axios.get(`${API_URL}/api/categories`, {
-      headers: getAuthHeaders().headers,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw new Error("Failed to fetch categories");
-  }
-};
