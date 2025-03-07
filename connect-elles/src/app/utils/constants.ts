@@ -1,3 +1,5 @@
+import axios from "axios";
+import { Category } from "./interface";
 export const getStatusColor = (status: string) => {
   if (!status) {
     return "bg-gray-100 text-gray-800";
@@ -37,4 +39,16 @@ export const getAuthHeaders = () => {
       "Content-Type": "application/json",
     },
   };
+};
+
+export const fetchCategories = async (): Promise<Category[]> => {
+  try {
+    const response = await axios.get(`${API_URL}/api/categories`, {
+      headers: getAuthHeaders().headers,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error("Failed to fetch categories");
+  }
 };

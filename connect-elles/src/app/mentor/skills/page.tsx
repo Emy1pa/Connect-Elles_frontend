@@ -5,8 +5,9 @@ import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Skill, SkillFormData, skillSchema } from "@/app/utils/types/skill";
 import { useForm } from "react-hook-form";
-import { deleteSkill, editSkill, getAuthHeaders } from "./skill-action";
+import { deleteSkill, editSkill } from "./skill-action";
 import SkillItem from "./SkillItem";
+import { getAuthHeaders } from "@/app/utils/constants";
 const SkillsList = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkill, setNewSkill] = useState({ title: "", description: "" });
@@ -29,9 +30,7 @@ const SkillsList = () => {
 
   const fetchSkills = async () => {
     try {
-      const response = await axios.get<Skill[]>(
-        `http://localhost:4000/api/skills/mentor/${userId}`
-      );
+      const response = await axios.get<Skill[]>(`http://localhost:4000/api/skills/mentor/${userId}`);
       getAuthHeaders();
       setSkills(response.data);
 
@@ -67,9 +66,7 @@ const SkillsList = () => {
   const handleEditSkill = async (skillId: string, newSkill: string, newDescription: string) => {
     try {
       const response = await editSkill(skillId, newSkill, newDescription);
-      setSkills((prevSkills) =>
-        prevSkills.map((skill) => (skill._id === skillId ? response : skill))
-      );
+      setSkills((prevSkills) => prevSkills.map((skill) => (skill._id === skillId ? response : skill)));
       setEditingId(null);
     } catch (error) {
       console.error("Error updating skill:", error);
@@ -121,19 +118,12 @@ const SkillsList = () => {
       {skills.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 bg-rose-50 rounded-2xl border border-rose-200">
           <div className="text-xl font-medium text-slate-800 mb-2">No Skills Found</div>
-          <p className="text-slate-600 text-center mb-4">
-            Start by adding your first skill using the button above.
-          </p>
+          <p className="text-slate-600 text-center mb-4">Start by adding your first skill using the button above.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skills.map((skill) => (
-            <SkillItem
-              key={skill._id}
-              skill={skill}
-              onEdit={handleEditSkill}
-              onDelete={handleDelete}
-            />
+            <SkillItem key={skill._id} skill={skill} onEdit={handleEditSkill} onDelete={handleDelete} />
           ))}
         </div>
       )}
@@ -143,10 +133,7 @@ const SkillsList = () => {
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-slate-800">Add New Skill</h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -169,19 +156,13 @@ const SkillsList = () => {
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
                 rows={4}
               />
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
-              )}
+              {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>}
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg hover:shadow-lg hover:shadow-rose-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               >
-                {isSubmitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Plus className="w-4 h-4" />
-                )}
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Add Skill
               </button>
             </form>
