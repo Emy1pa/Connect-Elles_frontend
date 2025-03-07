@@ -8,11 +8,7 @@ interface CommentListProps {
   onCommentUpdated: (commentId: string, updatedText: string) => void;
 }
 
-const CommentList: React.FC<CommentListProps> = ({
-  comments,
-  onCommentDeleted,
-  onCommentUpdated,
-}) => {
+const CommentList: React.FC<CommentListProps> = ({ comments, onCommentDeleted, onCommentUpdated }) => {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [editingComment, setEditingComment] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
@@ -34,16 +30,13 @@ const CommentList: React.FC<CommentListProps> = ({
     setIsDeleting(commentId);
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/comments/${commentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         onCommentDeleted(commentId);
@@ -81,19 +74,16 @@ const CommentList: React.FC<CommentListProps> = ({
     setIsUpdating(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/comments/${commentId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            text: editText,
-          }),
-        }
-      );
+      const response = await fetch(`http://localhost:4000/comments/${commentId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          text: editText,
+        }),
+      });
 
       if (response.ok) {
         onCommentUpdated(commentId, editText);
@@ -114,9 +104,7 @@ const CommentList: React.FC<CommentListProps> = ({
   if (comments.length === 0) {
     return (
       <div className="text-center py-8 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">
-          No comments yet. Be the first to comment!
-        </p>
+        <p className="text-gray-500">No comments yet. Be the first to comment!</p>
       </div>
     );
   }
@@ -124,17 +112,14 @@ const CommentList: React.FC<CommentListProps> = ({
   return (
     <div className="space-y-6">
       {comments.map((comment) => (
-        <div
-          key={comment._id}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
-        >
+        <div key={comment._id} className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center">
               <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white">
-                {comment.user.profileImage ? (
+                {comment.user && comment.user.profileImage ? (
                   <img
-                    src={`http://localhost:4000${comment.user.profileImage}`}
-                    alt={comment.user.fullName}
+                    src={`http://localhost:4000${comment.user?.profileImage}`}
+                    alt={comment.user?.fullName}
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
@@ -142,9 +127,7 @@ const CommentList: React.FC<CommentListProps> = ({
                 )}
               </div>
               <div className="ml-3">
-                <h4 className="font-medium text-slate-800">
-                  {comment.user.fullName}
-                </h4>
+                <h4 className="font-medium text-slate-800">{comment.user?.fullName}</h4>
               </div>
             </div>
             <div className="flex items-center text-sm text-gray-500">
@@ -155,15 +138,13 @@ const CommentList: React.FC<CommentListProps> = ({
                 day: "numeric",
               })}
             </div>
-            {userId === comment.user._id && (
+            {userId === comment.user?._id && (
               <div className="flex">
                 <button
                   onClick={() => handleEditClick(comment)}
                   disabled={isDeleting === comment._id || isUpdating}
                   className={`p-1.5 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors mr-1 ${
-                    isDeleting === comment._id || isUpdating
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
+                    isDeleting === comment._id || isUpdating ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   aria-label="Edit comment"
                 >
@@ -174,9 +155,7 @@ const CommentList: React.FC<CommentListProps> = ({
                   onClick={() => handleDeleteClick(comment._id)}
                   disabled={isDeleting === comment._id}
                   className={`p-1.5 rounded-full text-gray-400 hover:text-rose-500 hover:bg-rose-50 transition-colors ${
-                    isDeleting === comment._id
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
+                    isDeleting === comment._id ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   aria-label="Delete comment"
                 >
@@ -210,15 +189,12 @@ const CommentList: React.FC<CommentListProps> = ({
                       : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-300"
                   }`}
                 >
-                  <Save className="w-4 h-4 mr-1" />{" "}
-                  {isUpdating ? "Saving..." : "Save"}
+                  <Save className="w-4 h-4 mr-1" /> {isUpdating ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>
           ) : (
-            <div className="text-slate-700 whitespace-pre-line">
-              {comment.text}
-            </div>
+            <div className="text-slate-700 whitespace-pre-line">{comment.text}</div>
           )}
         </div>
       ))}
