@@ -1,73 +1,41 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Plus, Loader2, X, Pencil, Trash2, Check } from "lucide-react";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Skill, SkillFormData, skillSchema } from "@/app/utils/types/skill";
-import { useForm } from "react-hook-form";
-import { deleteSkill, editSkill } from "./skill-action";
+import { Plus, Loader2, X } from "lucide-react";
+import { Skill, SkillFormData } from "@/app/utils/types/skill";
+import { deleteSkill, editSkill, createSkill, fetchSkills } from "./skill-action";
 import SkillItem from "./SkillItem";
-import { getAuthHeaders } from "@/app/utils/constants";
+import SkillForm from "./SkillForm";
+
 const SkillsList = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkill, setNewSkill] = useState({ title: "", description: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [isSubmit, setIsSubmitting] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<SkillFormData>({
-    resolver: zodResolver(skillSchema),
-  });
-  useEffect(() => {
-    fetchSkills();
-  }, []);
+  const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    loadSkills();
+  }, []);
 
-  const fetchSkills = async () => {
+  const loadSkills = async () => {
+    if (!userId) return;
+    setIsLoading(true);
     try {
-      const response = await axios.get<Skill[]>(`http://localhost:4000/api/skills/mentor/${userId}`);
-      getAuthHeaders();
-      setSkills(response.data);
-
-      setIsLoading(false);
+      const data = await fetchSkills(userId);
+      setSkills(data);
     } catch (error) {
       console.error("Error fetching skills:", error);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAddSkill = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newSkill.title.trim() || !newSkill.description.trim()) return;
-
-    setIsSubmitting(true);
-
+  const handleEditSkill = async (skillId: string, newSkill: string, newDescription: string): Promise<void> => {
     try {
-      const response = await axios.post<Skill>(
-        "http://localhost:4000/api/skills",
-        { title: newSkill.title, description: newSkill.description },
-        getAuthHeaders()
-      );
-      setSkills((prevSkills) => [...prevSkills, response.data]);
-      reset();
-      setNewSkill({ title: "", description: "" });
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error adding skill:", error);
-    }
-    setIsSubmitting(false);
-  };
-
-  const handleEditSkill = async (skillId: string, newSkill: string, newDescription: string) => {
-    try {
-      const response = await editSkill(skillId, newSkill, newDescription);
-      setSkills((prevSkills) => prevSkills.map((skill) => (skill._id === skillId ? response : skill)));
-      setEditingId(null);
+      const updatedSkill = await editSkill(skillId, newSkill, newDescription);
+      setSkills((prevSkills) => prevSkills.map((skill) => (skill._id === skillId ? updatedSkill : skill)));
     } catch (error) {
       console.error("Error updating skill:", error);
       alert("Failed to update skill. Please try again.");
@@ -77,8 +45,6 @@ const SkillsList = () => {
   const handleDelete = async (skill: Skill) => {
     if (confirm(`Are you sure you want to delete "${skill.title}"?`)) {
       try {
-        const skillId = skill._id;
-
         await deleteSkill(skill._id);
         setSkills((prevSkills) => prevSkills.filter((s) => s._id !== skill._id));
       } catch (error) {
@@ -87,7 +53,33 @@ const SkillsList = () => {
       }
     }
   };
+  const openEditModal = (skill: Skill) => {
+    setEditingSkill(skill);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingSkill(null);
+  };
 
+  const handleFormSubmit = async (data: SkillFormData) => {
+    setIsSubmitting(true);
+    try {
+      if (editingSkill) {
+        const updatedSkill = await editSkill(editingSkill._id, data.title, data.description);
+        setSkills((prevSkills) => prevSkills.map((skill) => (skill._id === editingSkill._id ? updatedSkill : skill)));
+      } else {
+        const newSkill = await createSkill(data);
+        setSkills((prevSkills) => [...prevSkills, newSkill]);
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -123,50 +115,25 @@ const SkillsList = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skills.map((skill) => (
-            <SkillItem key={skill._id} skill={skill} onEdit={handleEditSkill} onDelete={handleDelete} />
+            <SkillItem
+              key={skill._id}
+              skill={skill}
+              onEdit={handleEditSkill}
+              onDelete={handleDelete}
+              onOpenEditModal={() => openEditModal(skill)}
+            />
           ))}
         </div>
       )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-slate-800">Add New Skill</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddSkill} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Skill title"
-                {...register("title")}
-                value={newSkill.title}
-                onChange={(e) => setNewSkill({ ...newSkill, title: e.target.value })}
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-              />
-              {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>}
-              <textarea
-                placeholder="Skill description"
-                {...register("description")}
-                value={newSkill.description}
-                onChange={(e) => setNewSkill({ ...newSkill, description: e.target.value })}
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-                rows={4}
-              />
-              {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg hover:shadow-lg hover:shadow-rose-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-              >
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                Add Skill
-              </button>
-            </form>
-          </div>
+          <SkillForm
+            onSubmit={handleFormSubmit}
+            editingSkill={editingSkill}
+            isSubmitting={isSubmitting}
+            onCancel={handleCloseModal}
+          />
         </div>
       )}
     </div>
