@@ -1,86 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Calendar, ArrowRight, X, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatDate, getStatusColor } from "@/app/utils/constants";
-import { Service } from "@/app/utils/interface";
-interface Reservation {
-  _id: string;
-  reservationDate: string;
-  reservationStatus: string;
-  service: Service | null;
-}
+import { API_URL, formatDate, getStatusColor } from "@/app/utils/constants";
+import { useReservations } from "./ReservationService";
+
 const MentorReservations = () => {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [confirmLoading, setConfirmLoading] = useState<string | null>(null);
-
-  const userRole = localStorage.getItem("userRole") || "mentor";
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token");
-
-  useEffect(() => {
-    const fetchUserReservations = async () => {
-      if (!userId || !token) return;
-
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `http://localhost:4000/reservations/mentor/${userId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setReservations(data);
-        }
-      } catch (error) {
-        console.error("Error fetching reservations:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserReservations();
-  }, [userId, token]);
-  const confirmReservation = async (reservationId: string) => {
-    if (!userId || !token) return;
-    try {
-      const response = await fetch(
-        `http://localhost:4000/reservations/${reservationId}/status/${userId}/${userRole}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status: "CONFIRMED" }),
-        }
-      );
-      if (response.ok) {
-        setReservations((prevReservations) =>
-          prevReservations.map((reservation) =>
-            reservation._id === reservationId
-              ? { ...reservation, reservationStatus: "CONFIRMED" }
-              : reservation
-          )
-        );
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to confirm reservation: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error("Error confirming reservation:", error);
-    } finally {
-      setConfirmLoading(null);
-    }
-  };
+  const { reservations, isLoading, confirmLoading, confirmReservation } = useReservations();
 
   if (isLoading) {
     return (
@@ -95,12 +22,8 @@ const MentorReservations = () => {
       <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center p-12 bg-pink-50 rounded-2xl shadow-xl">
-            <h2 className="text-3xl font-bold text-pink-600 mb-4">
-              No Reservations Yet
-            </h2>
-            <p className="text-slate-600 mb-8">
-              You haven't received any service reservations.
-            </p>
+            <h2 className="text-3xl font-bold text-pink-600 mb-4">No Reservations Yet</h2>
+            <p className="text-slate-600 mb-8">You haven't received any service reservations.</p>
             <Link href="/user/services">
               <div className="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300">
                 Browse Services
@@ -132,7 +55,7 @@ const MentorReservations = () => {
                     <Image
                       src={
                         reservation.service.serviceImage
-                          ? `http://localhost:4000${reservation.service.serviceImage}`
+                          ? `${API_URL}${reservation.service.serviceImage}`
                           : "/api/placeholder/800/400"
                       }
                       alt={reservation.service.title}
@@ -153,9 +76,7 @@ const MentorReservations = () => {
                   </div>
 
                   <div className="p-6 border-t-4 border-pink-400">
-                    <h2 className="text-xl font-bold text-slate-800 mb-3">
-                      {reservation.service.title}
-                    </h2>
+                    <h2 className="text-xl font-bold text-slate-800 mb-3">{reservation.service.title}</h2>
 
                     <div className="mb-4">
                       <div className="flex items-center text-slate-600 mb-2">
@@ -163,12 +84,9 @@ const MentorReservations = () => {
                         <span>{formatDate(reservation.reservationDate)}</span>
                       </div>
                       <div className="text-slate-600">
-                        <span className="font-medium">Duration:</span>{" "}
-                        {reservation.service.duration} min
+                        <span className="font-medium">Duration:</span> {reservation.service.duration} min
                       </div>
-                      <div className="text-pink-600 font-bold mt-2">
-                        {reservation.service.price} $
-                      </div>
+                      <div className="text-pink-600 font-bold mt-2">{reservation.service.price} $</div>
                     </div>
 
                     <div className="flex justify-between items-center">
@@ -178,22 +96,20 @@ const MentorReservations = () => {
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </div>
                       </Link>
-                      {reservation.reservationStatus &&
-                        reservation.reservationStatus.toLowerCase() ===
-                          "pending" && (
-                          <button
-                            onClick={() => confirmReservation(reservation._id)}
-                            disabled={confirmLoading === reservation._id}
-                            className="inline-flex ml-6 items-center px-4 py-2 rounded-xl bg-green-100 text-green-600 font-medium hover:bg-green-200 transition-colors duration-300"
-                          >
-                            {confirmLoading === reservation._id ? (
-                              <div className="w-4 h-4 border-2 border-green-200 border-t-green-500 rounded-full animate-spin mr-2"></div>
-                            ) : (
-                              <CheckCircle className="w-4 h-4 mr-2" />
-                            )}
-                            Confirm
-                          </button>
-                        )}
+                      {reservation.reservationStatus && reservation.reservationStatus.toLowerCase() === "pending" && (
+                        <button
+                          onClick={() => confirmReservation(reservation._id)}
+                          disabled={confirmLoading === reservation._id}
+                          className="inline-flex ml-6 items-center px-4 py-2 rounded-xl bg-green-100 text-green-600 font-medium hover:bg-green-200 transition-colors duration-300"
+                        >
+                          {confirmLoading === reservation._id ? (
+                            <div className="w-4 h-4 border-2 border-green-200 border-t-green-500 rounded-full animate-spin mr-2"></div>
+                          ) : (
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                          )}
+                          Confirm
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -66,7 +66,7 @@ export interface Service {
 export interface Reservation {
   _id: string;
   reservationDate: string;
-  status: string;
+  reservationStatus: string;
   service: Service | null;
 }
 
