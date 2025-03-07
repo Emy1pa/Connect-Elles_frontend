@@ -1,18 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Calendar, Heart, MessageSquare, Book, Briefcase, Award } from "lucide-react";
-import {
-  BlogsStatistics,
-  CategoriesStatistics,
-  CommentStatistics,
-  FavoriteStatistics,
-  ReservationStatistics,
-  ServicesStatistics,
-  SkillsStatistics,
-  Statistics,
-  UserStatistics,
-} from "@/app/utils/statistics";
+
 import { fetchStatistics } from "./StatisticsService";
+import { Statistics } from "@/app/utils/statistics";
 
 const AdminStatisticsDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
