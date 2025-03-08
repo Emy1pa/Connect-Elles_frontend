@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { ArrowRight, Calendar, Search, Tag, User } from "lucide-react";
 import { Blog } from "@/app/utils/interface";
 import { useRouter } from "next/navigation";
+import { API_URL, fetchCategories } from "@/app/utils/constants";
+import { fetchPublishedBlogs } from "./blogService";
 
 const BlogList = () => {
   const router = useRouter();
@@ -12,47 +14,26 @@ const BlogList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const fetchCategories = async () => {
+
+  const loadData = async (): Promise<void> => {
     try {
-      const response = await fetch("http://localhost:4000/api/categories", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setCategories(data);
+      setIsLoading(true);
+      const [blogsData, categoriesData] = await Promise.all([fetchPublishedBlogs(), fetchCategories()]);
+      setBlogs(blogsData);
+      setCategories(categoriesData);
     } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-  const fetchPublishedBlogs = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:4000/api/blogs/published",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setBlogs(data);
-    } catch (error) {
-      console.error("Error fetching published blogs:", error);
+      console.error("Error loading data:", error);
     } finally {
       setIsLoading(false);
     }
   };
   useEffect(() => {
-    Promise.all([fetchPublishedBlogs(), fetchCategories()]);
+    loadData();
   }, []);
 
   const filteredBlogs = blogs.filter((blog) => {
-    const searchMatch = blog.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const categoryMatch =
-      selectedCategory === "" || blog.category?._id === selectedCategory;
+    const searchMatch = blog.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const categoryMatch = selectedCategory === "" || blog.category?._id === selectedCategory;
     return searchMatch && categoryMatch;
   });
 
@@ -71,9 +52,7 @@ const BlogList = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-sm font-medium mb-4">
             Our Blog
           </span>
-          <h1 className="text-4xl font-bold text-slate-800">
-            Latest Stories & Insights
-          </h1>
+          <h1 className="text-4xl font-bold text-slate-800">Latest Stories & Insights</h1>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
             Discover inspiring stories, helpful tips, and community highlights
           </p>
@@ -126,11 +105,7 @@ const BlogList = () => {
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={
-                      blog.blogImage
-                        ? `http://localhost:4000${blog.blogImage}`
-                        : "/api/placeholder/400/320"
-                    }
+                    src={blog.blogImage ? `http://localhost:4000${blog.blogImage}` : "/api/placeholder/400/320"}
                     alt={blog.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
@@ -154,9 +129,7 @@ const BlogList = () => {
                     </div>
                     <div className="flex items-center">
                       <User className="w-4 h-4 mr-2" />
-                      <span className="text-pink-600">
-                        {blog.user?.fullName || "Anonymous"}
-                      </span>
+                      <span className="text-pink-600">{blog.user?.fullName || "Anonymous"}</span>
                     </div>
                   </div>
 
@@ -164,9 +137,7 @@ const BlogList = () => {
                     {blog.title}
                   </h3>
 
-                  <p className="text-slate-600 mb-6 line-clamp-3 flex-grow">
-                    {blog.summary}
-                  </p>
+                  <p className="text-slate-600 mb-6 line-clamp-3 flex-grow">{blog.summary}</p>
 
                   <button
                     onClick={() => router.push(`/user/blogs/${blog._id}`)}
