@@ -2,61 +2,36 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight, Clock, Tag, Users, Calendar, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Service } from "@/app/utils/interface";
-
+import { fetchCategories } from "@/app/utils/constants";
+import { useServices } from "@/app/hooks/useServices";
 const ServiceList = () => {
   const router = useRouter();
-  const [services, setServices] = useState<Service[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { services, isLoading } = useServices();
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [availability, setAvailability] = useState("");
-
-  const fetchServices = async () => {
+  const loadCategories = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/services", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setServices(data);
-    } catch (error) {
-      console.error("Error fetching services:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/api/categories", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setCategories(data);
+      const categoryData = await fetchCategories();
+      if (categoryData) {
+        setCategories(categoryData);
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
   useEffect(() => {
-    Promise.all([fetchCategories(), fetchServices()]);
+    loadCategories();
   }, []);
   const filteredServices = services.filter((service) => {
-    const searchMatch = service.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const categoryMatch =
-      selectedCategory === "" || service.category?._id === selectedCategory;
+    const searchMatch = service.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const categoryMatch = selectedCategory === "" || service.category?._id === selectedCategory;
     const priceMatch =
-      (!minPrice || service.price >= parseFloat(minPrice)) &&
-      (!maxPrice || service.price <= parseFloat(maxPrice));
-    const availabilityMatch =
-      availability === "" || service.status === availability;
+      (!minPrice || service.price >= parseFloat(minPrice)) && (!maxPrice || service.price <= parseFloat(maxPrice));
+    const availabilityMatch = availability === "" || service.status === availability;
     return searchMatch && categoryMatch && priceMatch && availabilityMatch;
   });
   if (isLoading) {
@@ -74,12 +49,9 @@ const ServiceList = () => {
           <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-700 text-sm font-medium mb-4">
             Our Services
           </span>
-          <h1 className="text-4xl font-bold text-slate-800">
-            Available Services
-          </h1>
+          <h1 className="text-4xl font-bold text-slate-800">Available Services</h1>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            Explore our range of professional services designed to meet your
-            needs
+            Explore our range of professional services designed to meet your needs
           </p>
           <div className="max-w-3xl mx-auto mt-8 flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
@@ -150,11 +122,7 @@ const ServiceList = () => {
         {filteredServices.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg text-slate-600">
-              {searchTerm ||
-              selectedCategory ||
-              minPrice ||
-              maxPrice ||
-              availability
+              {searchTerm || selectedCategory || minPrice || maxPrice || availability
                 ? "No Services found matching your filters"
                 : " No services available at the moment."}
             </p>
@@ -169,9 +137,7 @@ const ServiceList = () => {
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={
-                      service.serviceImage
-                        ? `http://localhost:4000${service.serviceImage}`
-                        : "/api/placeholder/400/320"
+                      service.serviceImage ? `http://localhost:4000${service.serviceImage}` : "/api/placeholder/400/320"
                     }
                     alt={service.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -204,9 +170,7 @@ const ServiceList = () => {
                     </div>
                   </div>
 
-                  <div className="text-lg font-bold text-rose-600 mb-4">
-                    ${service.price}
-                  </div>
+                  <div className="text-lg font-bold text-rose-600 mb-4">${service.price}</div>
 
                   <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center text-slate-500 text-sm">
