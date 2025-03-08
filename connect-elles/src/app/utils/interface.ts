@@ -72,10 +72,7 @@ export interface Reservation {
 
 export interface Favorite {
   _id: string;
-  blog: {
-    _id: string;
-    title: string;
-  };
+  blog: Blog;
 }
 
 export interface Comment {
@@ -104,4 +101,20 @@ export interface User {
   _id: string;
   fullName: string;
   email: string;
+}
+
+export interface Skill {
+  _id: string;
+  title: string;
+  description: string;
+  user: string;
+}
+
+export interface Mentor {
+  _id: string;
+  fullName: string;
+  email: string;
+  username?: string;
+  profileImage?: string;
+  userRole?: string;
 }

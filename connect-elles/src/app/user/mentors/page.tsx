@@ -4,15 +4,7 @@ import { UserCircle2, Search, ArrowRight } from "lucide-react";
 import { API_URL } from "@/app/utils/constants";
 import axios from "axios";
 import MentorProfileModal from "./MentorProfileModal";
-
-interface Mentor {
-  _id: string;
-  fullName: string;
-  email: string;
-  username?: string;
-  profileImage?: string;
-  userRole?: string;
-}
+import { Mentor } from "@/app/utils/interface";
 
 const MentorsList: React.FC = () => {
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -31,10 +23,6 @@ const MentorsList: React.FC = () => {
           },
         });
 
-        if (response.status !== 200) {
-          throw new Error("Failed to fetch mentors");
-        }
-
         setMentors(response.data);
       } catch (error) {
         console.error("Error fetching mentors:", error);
@@ -46,9 +34,7 @@ const MentorsList: React.FC = () => {
     fetchMentors();
   }, []);
 
-  const filteredMentors = mentors.filter((mentor) =>
-    mentor.fullName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMentors = mentors.filter((mentor) => mentor.fullName.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (isLoading) {
     return (
@@ -115,9 +101,7 @@ const MentorsList: React.FC = () => {
                       <span className="mr-4">@{mentor.username || "mentor"}</span>
                       <span className="text-pink-600">{mentor.email}</span>
                     </div>
-                    <p className="text-slate-500 italic">
-                      Passionate about guiding and inspiring professionals
-                    </p>
+                    <p className="text-slate-500 italic">Passionate about guiding and inspiring professionals</p>
                   </div>
 
                   <div className="ml-6">
@@ -135,9 +119,7 @@ const MentorsList: React.FC = () => {
           )}
         </div>
       </div>
-      {selectedMentor && (
-        <MentorProfileModal mentor={selectedMentor} onClose={() => setSelectedMentor(null)} />
-      )}
+      {selectedMentor && <MentorProfileModal mentor={selectedMentor} onClose={() => setSelectedMentor(null)} />}
     </>
   );
 };
