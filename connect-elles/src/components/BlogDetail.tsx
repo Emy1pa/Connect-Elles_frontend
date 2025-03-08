@@ -1,187 +1,34 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import {
-  ArrowLeft,
-  Calendar,
-  Tag,
-  User,
-  Heart,
-  MessageCircle,
-} from "lucide-react";
-import { Blog, Comment, Favorite } from "@/app/utils/interface";
+import React, { useState } from "react";
+import { ArrowLeft, Calendar, Tag, User, Heart, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
+import { useBlogDetail } from "@/app/hooks/useBlogDetail";
+import { useBlogFavorites } from "@/app/hooks/useBlogFavorites";
+import { useBlogComments } from "@/app/hooks/useBlogComments";
+import { API_URL } from "@/app/utils/constants";
 
 interface BlogDetailProps {
   blogId: string;
 }
 
 const BlogDetail = ({ blogId }: BlogDetailProps) => {
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [favoriteId, setFavoriteId] = useState<string | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [showComments, setShowComments] = useState(false);
   const router = useRouter();
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token");
+  const [showComments, setShowComments] = useState(false);
 
-  useEffect(() => {
-    const fetchBlogDetails = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/api/blogs/${blogId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        console.log("Fetched blog data:", data);
-        setBlog(data);
-      } catch (error) {
-        console.error("Error fetching blog details:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (blogId) {
-      fetchBlogDetails();
-      if (userId) {
-        checkIfFavorite();
-      }
-    }
-  }, [blogId, userId]);
-  const fetchComments = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:4000/comments/blog/${blogId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setComments(data);
-      }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
-  useEffect(() => {
-    if (showComments) {
-      fetchComments();
-    }
-  }, [showComments, blogId, userId]);
-
-  const handleCommentAdded = (newComment: Comment) => {
-    setComments((prevComments) => [newComment, ...prevComments]);
-  };
-  const handleCommentDeleted = (commentId: string) => {
-    setComments((prevComments) =>
-      prevComments.filter((comment) => comment._id !== commentId)
-    );
-  };
-  const handleCommentUpdated = (commentId: string, updatedText: string) => {
-    setComments((prevComments) =>
-      prevComments.map((comment) =>
-        comment._id === commentId ? { ...comment, text: updatedText } : comment
-      )
-    );
-  };
-  const checkIfFavorite = async () => {
-    if (!userId || !token) return;
-    try {
-      const response = await fetch(
-        `http://localhost:4000/favorites/${userId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const favorites: Favorite[] = await response.json();
-        const favorite = favorites.find(
-          (fav) => fav.blog && fav.blog._id === blogId
-        );
-        if (favorite) {
-          setIsFavorite(true);
-          setFavoriteId(favorite._id);
-        } else {
-          setIsFavorite(false);
-          setFavoriteId(null);
-        }
-      }
-    } catch (error) {
-      console.error("Error checking favorites:", error);
-    }
-  };
-
-  const handleFavoriteToggle = async () => {
-    if (!userId || !token) {
-      alert("Please log in to add favorites");
-      return;
-    }
-
-    try {
-      if (isFavorite && favoriteId) {
-        const response = await fetch(
-          `http://localhost:4000/favorites/${favoriteId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          setIsFavorite(false);
-          setFavoriteId(null);
-        }
-      } else {
-        const response = await fetch(
-          `http://localhost:4000/favorites/${userId}/${blogId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setIsFavorite(true);
-          setFavoriteId(data._id);
-        }
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
+  const { blog, isLoading } = useBlogDetail(blogId);
+  const { isFavorite, handleFavoriteToggle } = useBlogFavorites(blogId);
+  const { comments, handleCommentAdded, handleCommentDeleted, handleCommentUpdated } = useBlogComments(
+    blogId,
+    showComments
+  );
 
   const handleGoBack = () => {
     router.back();
   };
-  useEffect(() => {
-    if (blog) {
-      console.log("Blog state:", blog);
-      console.log("Category data:", blog.category);
-    }
-  }, [blog]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-rose-50 to-pink-50">
@@ -193,9 +40,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
   if (!blog) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-rose-50 to-pink-50">
-        <h2 className="text-2xl font-bold text-rose-500 mb-4">
-          Blog not found
-        </h2>
+        <h2 className="text-2xl font-bold text-rose-500 mb-4">Blog not found</h2>
         <button
           onClick={handleGoBack}
           className="flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300"
@@ -225,11 +70,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
             <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden">
               <div className="relative h-96 w-full">
                 <Image
-                  src={
-                    blog.blogImage
-                      ? `http://localhost:4000${blog.blogImage}`
-                      : "/api/placeholder/1200/800"
-                  }
+                  src={blog.blogImage ? `${API_URL}${blog.blogImage}` : "/api/placeholder/1200/800"}
                   alt={blog.title}
                   className="w-full h-full object-cover"
                   width={1200}
@@ -244,9 +85,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                   ) : (
                     <p className="text-gray-500">No category</p>
                   )}
-                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                    {blog.title}
-                  </h1>
+                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{blog.title}</h1>
 
                   <div className="flex flex-wrap items-center text-white/90 gap-4">
                     <div className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full">
@@ -261,22 +100,14 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                       <User className="w-5 h-5 mr-2" />
                       {blog.user?.fullName}
                     </div>
-                    {userId && (
+                    {localStorage.getItem("userId") && (
                       <button
                         onClick={handleFavoriteToggle}
                         className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full hover:bg-black/20 transition-colors"
-                        aria-label={
-                          isFavorite
-                            ? "Remove from favorites"
-                            : "Add to favorites"
-                        }
+                        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
                       >
                         <Heart
-                          className={`w-5 h-5 mr-2 ${
-                            isFavorite
-                              ? "fill-pink-500 text-pink-500"
-                              : "text-white"
-                          }`}
+                          className={`w-5 h-5 mr-2 ${isFavorite ? "fill-pink-500 text-pink-500" : "text-white"}`}
                         />
                         {isFavorite ? "Favorited" : "Add to favorites"}
                       </button>
@@ -304,9 +135,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                 </div>
 
                 <div className="prose prose-pink prose-lg max-w-none prose-headings:text-slate-800 prose-p:text-slate-700 prose-a:text-pink-600 prose-a:no-underline prose-a:font-medium hover:prose-a:text-pink-700">
-                  <div
-                    dangerouslySetInnerHTML={{ __html: blog.content || "" }}
-                  />
+                  <div dangerouslySetInnerHTML={{ __html: blog.content || "" }} />
                 </div>
                 <div className="border-t border-gray-200 pt-10">
                   <button
@@ -325,7 +154,7 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                         </h3>
                         <CommentForm
                           blogId={blogId}
-                          user={userId}
+                          user={localStorage.getItem("userId") || ""}
                           onCommentAdded={handleCommentAdded}
                         />
                       </div>
