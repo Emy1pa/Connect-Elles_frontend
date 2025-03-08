@@ -11,26 +11,27 @@ const MentorsList: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
-
-  useEffect(() => {
-    const fetchMentors = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/api/users/mentors`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        setMentors(response.data);
-      } catch (error) {
-        console.error("Error fetching mentors:", error);
-      } finally {
-        setIsLoading(false);
+  const fetchMentors = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Token non trouvé");
+      const response = await axios.get(`${API_URL}/api/users/mentors`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch mentors");
       }
-    };
-
+      setMentors(response.data);
+    } catch (error) {
+      console.error("Error fetching mentors:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchMentors();
   }, []);
 

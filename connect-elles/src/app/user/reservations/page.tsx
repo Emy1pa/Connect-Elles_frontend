@@ -3,71 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Calendar, ArrowRight, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Reservation } from "@/app/utils/interface";
-import { formatDate, getStatusColor } from "@/app/utils/constants";
+import { API_URL, formatDate, getStatusColor } from "@/app/utils/constants";
+import { useReservations } from "@/app/hooks/useReservations";
 
 const UserReservations = () => {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [cancelLoading, setCancelLoading] = useState<string | null>(null);
-
-  const userRole = localStorage.getItem("userRole") || "normal_user";
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token");
-
-  useEffect(() => {
-    const fetchUserReservations = async () => {
-      if (!userId || !token) return;
-
-      try {
-        setIsLoading(true);
-        const response = await fetch(`http://localhost:4000/reservations/user/${userId}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setReservations(data);
-        }
-      } catch (error) {
-        console.error("Error fetching reservations:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserReservations();
-  }, [userId, token]);
-  const cancelReservation = async (reservationId: string) => {
-    if (!userId || !token) return;
-    try {
-      const response = await fetch(`http://localhost:4000/reservations/${reservationId}/status/${userId}/${userRole}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: "CANCELED" }),
-      });
-      if (response.ok) {
-        setReservations((prevReservations) =>
-          prevReservations.map((reservation) =>
-            reservation._id === reservationId ? { ...reservation, status: "CANCELLED" } : reservation
-          )
-        );
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to cancel reservation: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error("Error cancelling reservation:", error);
-    } finally {
-      setCancelLoading(null);
-    }
-  };
+  const { reservations, isLoading, cancelLoading, cancelReservation } = useReservations();
 
   if (isLoading) {
     return (
@@ -115,7 +55,7 @@ const UserReservations = () => {
                     <Image
                       src={
                         reservation.service.serviceImage
-                          ? `http://localhost:4000${reservation.service.serviceImage}`
+                          ? `${API_URL}${reservation.service.serviceImage}`
                           : "/api/placeholder/800/400"
                       }
                       alt={reservation.service.title}
@@ -156,7 +96,7 @@ const UserReservations = () => {
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </div>
                       </Link>
-                      {reservation.reservationStatus.toLowerCase() === "pending" && (
+                      {reservation.reservationStatus?.toLowerCase() === "pending" && (
                         <button
                           onClick={() => cancelReservation(reservation._id)}
                           disabled={cancelLoading === reservation._id}
