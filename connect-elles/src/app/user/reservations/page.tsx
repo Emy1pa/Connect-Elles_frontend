@@ -21,15 +21,12 @@ const UserReservations = () => {
 
       try {
         setIsLoading(true);
-        const response = await fetch(
-          `http://localhost:4000/reservations/user/${userId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`http://localhost:4000/reservations/user/${userId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -47,23 +44,18 @@ const UserReservations = () => {
   const cancelReservation = async (reservationId: string) => {
     if (!userId || !token) return;
     try {
-      const response = await fetch(
-        `http://localhost:4000/reservations/${reservationId}/status/${userId}/${userRole}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status: "CANCELED" }),
-        }
-      );
+      const response = await fetch(`http://localhost:4000/reservations/${reservationId}/status/${userId}/${userRole}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: "CANCELED" }),
+      });
       if (response.ok) {
         setReservations((prevReservations) =>
           prevReservations.map((reservation) =>
-            reservation._id === reservationId
-              ? { ...reservation, status: "CANCELLED" }
-              : reservation
+            reservation._id === reservationId ? { ...reservation, status: "CANCELLED" } : reservation
           )
         );
       } else {
@@ -90,12 +82,8 @@ const UserReservations = () => {
       <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center p-12 bg-pink-50 rounded-2xl shadow-xl">
-            <h2 className="text-3xl font-bold text-pink-600 mb-4">
-              No Reservations Yet
-            </h2>
-            <p className="text-slate-600 mb-8">
-              You haven't made any service reservations.
-            </p>
+            <h2 className="text-3xl font-bold text-pink-600 mb-4">No Reservations Yet</h2>
+            <p className="text-slate-600 mb-8">You haven't made any service reservations.</p>
             <Link href="/user/services">
               <div className="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300">
                 Browse Services
@@ -139,18 +127,16 @@ const UserReservations = () => {
                     <div className="absolute top-3 left-3">
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                          reservation.status
+                          reservation.reservationStatus
                         )}`}
                       >
-                        {reservation.status}
+                        {reservation.reservationStatus}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-6 border-t-4 border-pink-400">
-                    <h2 className="text-xl font-bold text-slate-800 mb-3">
-                      {reservation.service.title}
-                    </h2>
+                    <h2 className="text-xl font-bold text-slate-800 mb-3">{reservation.service.title}</h2>
 
                     <div className="mb-4">
                       <div className="flex items-center text-slate-600 mb-2">
@@ -158,12 +144,9 @@ const UserReservations = () => {
                         <span>{formatDate(reservation.reservationDate)}</span>
                       </div>
                       <div className="text-slate-600">
-                        <span className="font-medium">Duration:</span>{" "}
-                        {reservation.service.duration} min
+                        <span className="font-medium">Duration:</span> {reservation.service.duration} min
                       </div>
-                      <div className="text-pink-600 font-bold mt-2">
-                        {reservation.service.price} $
-                      </div>
+                      <div className="text-pink-600 font-bold mt-2">{reservation.service.price} $</div>
                     </div>
 
                     <div className="flex justify-between items-center">
@@ -173,7 +156,7 @@ const UserReservations = () => {
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </div>
                       </Link>
-                      {reservation.status.toLowerCase() === "pending" && (
+                      {reservation.reservationStatus.toLowerCase() === "pending" && (
                         <button
                           onClick={() => cancelReservation(reservation._id)}
                           disabled={cancelLoading === reservation._id}

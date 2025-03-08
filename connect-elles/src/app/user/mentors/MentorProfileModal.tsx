@@ -3,22 +3,7 @@ import React, { useState, useEffect } from "react";
 import { UserCircle2, X } from "lucide-react";
 import { API_URL } from "@/app/utils/constants";
 import axios from "axios";
-
-interface Skill {
-  _id: string;
-  title: string;
-  description: string;
-  user: string;
-}
-
-interface Mentor {
-  _id: string;
-  fullName: string;
-  email: string;
-  username?: string;
-  profileImage?: string;
-  userRole?: string;
-}
+import { Mentor, Skill } from "@/app/utils/interface";
 
 const MentorProfileModal: React.FC<{
   mentor: Mentor;
@@ -26,30 +11,24 @@ const MentorProfileModal: React.FC<{
 }> = ({ mentor, onClose }) => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [isLoadingSkills, setIsLoadingSkills] = useState(true);
+  const fetchMentorSkills = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API_URL}/api/skills/mentor/${mentor._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
+      setSkills(response.data);
+    } catch (error) {
+      console.error("Error fetching mentor skills:", error);
+    } finally {
+      setIsLoadingSkills(false);
+    }
+  };
   useEffect(() => {
-    const fetchMentorSkills = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/api/skills/mentor/${mentor._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status !== 200) {
-          throw new Error("Failed to fetch mentor skills");
-        }
-
-        setSkills(response.data);
-      } catch (error) {
-        console.error("Error fetching mentor skills:", error);
-      } finally {
-        setIsLoadingSkills(false);
-      }
-    };
-
     fetchMentorSkills();
   }, [mentor._id]);
 
