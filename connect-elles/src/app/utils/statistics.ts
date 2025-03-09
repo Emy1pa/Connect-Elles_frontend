@@ -54,3 +54,10 @@ export interface Statistics {
   categories: CategoriesStatistics | null;
   users: UserStatistics | null;
 }
+
+export interface ReservationStatistic {
+  total: number;
+  pending: number;
+  confirmed: number;
+  canceled: number;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ArrowLeft, Calendar, Tag, Clock, Users, User, LogIn } from "lucide-react";
 import ReservationModal from "./ReservationModal";
 import { useServiceDetail } from "@/app/hooks/useServiceDetail";
