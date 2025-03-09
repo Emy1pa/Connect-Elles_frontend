@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  X,
-  Calendar,
-  CreditCard,
-  AlertCircle,
-  CheckCircle,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import Link from "next/link";
+import { X, Calendar, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
+import { useReservation } from "@/app/hooks/useReservationModal";
 
 interface ReservationModalProps {
   isOpen: boolean;
@@ -25,133 +17,35 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   serviceId,
   onReservationSuccess,
 }) => {
-  const router = useRouter();
-  const [reservationDate, setReservationDate] = useState("");
-  const [cardHolderName, setCardHolderName] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCVV, setCardCVV] = useState("");
+  const {
+    reservationDate,
+    setReservationDate,
+    cardHolderName,
+    setCardHolderName,
+    cardNumber,
+    cardExpiry,
+    cardCVV,
+    setCardCVV,
+    isLoading,
+    errorMessage,
+    successMessage,
+    handleSubmit,
+    handleCardNumberChange,
+    handleExpiryChange,
+  } = useReservation({
+    userId,
+    serviceId,
+    onReservationSuccess,
+    onClose,
+  });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-  }, []);
-  const validateForm = () => {
-    setErrorMessage("");
-
-    if (!reservationDate) {
-      setErrorMessage("Please select a reservation date");
-      return false;
-    }
-
-    if (!cardHolderName) {
-      setErrorMessage("Please enter the cardholder name");
-      return false;
-    }
-
-    const cleanedCardNumber = cardNumber.replace(/\s/g, "");
-    if (
-      !cleanedCardNumber ||
-      cleanedCardNumber.length < 13 ||
-      cleanedCardNumber.length > 19
-    ) {
-      setErrorMessage("Please enter a valid card number (13-19 digits)");
-      return false;
-    }
-
-    if (!cardExpiry || !cardExpiry.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) {
-      setErrorMessage("Please enter a valid expiry date (MM/YY)");
-      return false;
-    }
-
-    if (!cardCVV || !cardCVV.match(/^\d{3,4}$/)) {
-      setErrorMessage("Please enter a valid CVV (3-4 digits)");
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const data = {
-        reservationDate: new Date(reservationDate).toISOString(),
-        cardHolderName,
-        cardNumber: cardNumber.replace(/\s/g, ""),
-        cardExpiry,
-        cardCVV,
-      };
-
-      await axios.post(
-        `http://localhost:4000/reservations/${userId}/${serviceId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setSuccessMessage("Reservation created successfully!");
-      setReservationDate("");
-      setCardHolderName("");
-      setCardNumber("");
-      setCardExpiry("");
-      setCardCVV("");
-
-      onReservationSuccess();
-
-      setTimeout(() => {
-        onClose();
-        <Link href={"/user/services"} />;
-        setSuccessMessage("");
-      }, 2000);
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message || "Failed to create reservation"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const cleaned = value.replace(/\s/g, "");
-    const formatted = cleaned.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
-    setCardNumber(formatted);
-  };
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const cleaned = value.replace(/\//g, "");
-
-    if (cleaned.length <= 2) {
-      setCardExpiry(cleaned);
-    } else {
-      setCardExpiry(`${cleaned.substring(0, 2)}/${cleaned.substring(2, 4)}`);
-    }
-  };
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-800">
-            Make Reservation
-          </h2>
+          <h2 className="text-2xl font-bold text-slate-800">Make Reservation</h2>
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -186,10 +80,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               <div className="flex items-center space-x-3">
                 <Calendar className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <div className="w-full">
-                  <label
-                    htmlFor="reservationDate"
-                    className="block text-sm font-medium text-slate-700 mb-1"
-                  >
+                  <label htmlFor="reservationDate" className="block text-sm font-medium text-slate-700 mb-1">
                     Reservation Date
                   </label>
                   <input
@@ -215,10 +106,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               </div>
 
               <div>
-                <label
-                  htmlFor="cardHolderName"
-                  className="block text-sm font-medium text-slate-700 mb-1"
-                >
+                <label htmlFor="cardHolderName" className="block text-sm font-medium text-slate-700 mb-1">
                   Cardholder Name
                 </label>
                 <input
@@ -233,10 +121,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               </div>
 
               <div>
-                <label
-                  htmlFor="cardNumber"
-                  className="block text-sm font-medium text-slate-700 mb-1"
-                >
+                <label htmlFor="cardNumber" className="block text-sm font-medium text-slate-700 mb-1">
                   Card Number
                 </label>
                 <input
@@ -253,10 +138,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label
-                    htmlFor="cardExpiry"
-                    className="block text-sm font-medium text-slate-700 mb-1"
-                  >
+                  <label htmlFor="cardExpiry" className="block text-sm font-medium text-slate-700 mb-1">
                     Expiry
                   </label>
                   <input
@@ -272,10 +154,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="cardCVV"
-                    className="block text-sm font-medium text-slate-700 mb-1"
-                  >
+                  <label htmlFor="cardCVV" className="block text-sm font-medium text-slate-700 mb-1">
                     CVV
                   </label>
                   <input
