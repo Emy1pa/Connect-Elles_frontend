@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Comment } from "@/app/utils/interface";
 import { User, Clock, Trash2, Edit, Save, X } from "lucide-react";
+import { useCommentOperations } from "@/app/hooks/useCommentOperations";
 
 interface CommentListProps {
   comments: Comment[];
@@ -9,98 +10,18 @@ interface CommentListProps {
 }
 
 const CommentList: React.FC<CommentListProps> = ({ comments, onCommentDeleted, onCommentUpdated }) => {
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  const [editingComment, setEditingComment] = useState<string | null>(null);
-  const [editText, setEditText] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token");
-  const handleDeleteClick = (commentId: string) => {
-    if (confirm("Are you sure you want to delete this comment?")) {
-      deleteComment(commentId);
-    }
-  };
-  const deleteComment = async (commentId: string) => {
-    if (!token) {
-      alert("You must be logged in to delete comments");
-      return;
-    }
-
-    setIsDeleting(commentId);
-
-    try {
-      const response = await fetch(`http://localhost:4000/comments/${commentId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        onCommentDeleted(commentId);
-      } else {
-        const error = await response.json();
-        console.error("Failed to delete comment:", error);
-        alert("Failed to delete comment. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-      alert("An error occurred. Please try again.");
-    } finally {
-      setIsDeleting(null);
-    }
-  };
-  const handleEditClick = (comment: Comment) => {
-    setEditingComment(comment._id);
-    setEditText(comment.text);
-  };
-  const handleCancelEdit = () => {
-    setEditingComment(null);
-    setEditText("");
-  };
-  const handleSaveEdit = async (commentId: string) => {
-    if (!token) {
-      alert("You must be logged in to update comments");
-      return;
-    }
-
-    if (!editText.trim()) {
-      alert("Comment cannot be empty");
-      return;
-    }
-
-    setIsUpdating(true);
-
-    try {
-      const response = await fetch(`http://localhost:4000/comments/${commentId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          text: editText,
-        }),
-      });
-
-      if (response.ok) {
-        onCommentUpdated(commentId, editText);
-        setEditingComment(null);
-      } else {
-        const error = await response.json();
-        console.error("Failed to update comment:", error);
-        alert("Failed to update comment. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating comment:", error);
-      alert("An error occurred. Please try again.");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
+  const {
+    isDeleting,
+    editingComment,
+    editText,
+    isUpdating,
+    userId,
+    setEditText,
+    handleDeleteClick,
+    handleEditClick,
+    handleCancelEdit,
+    handleSaveEdit,
+  } = useCommentOperations(onCommentDeleted, onCommentUpdated);
   if (comments.length === 0) {
     return (
       <div className="text-center py-8 bg-gray-50 rounded-lg">
