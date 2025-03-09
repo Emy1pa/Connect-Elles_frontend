@@ -118,3 +118,10 @@ export interface Mentor {
   profileImage?: string;
   userRole?: string;
 }
+export interface ReservationFormData {
+  reservationDate: string;
+  cardHolderName: string;
+  cardNumber: string;
+  cardExpiry: string;
+  cardCVV: string;
+}
