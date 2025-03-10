@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,8 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormData, loginSchema } from "@/app/utils/types/login";
 import { useLogin } from "@/app/hooks/useLogin";
 import { girls } from "@/app/utils/images";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Or check auth context
+    if (token) {
+      router.replace("/");
+    }
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
   const { login, isSubmitting } = useLogin();
 
@@ -34,9 +42,7 @@ const LoginPage = () => {
 
   const buttonClass = `w-full px-6 py-3 bg-gradient-to-r from-rose-400 to-pink-400 text-white rounded-xl 
     font-medium shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 transform 
-    hover:-translate-y-1 transition-all duration-300 ${
-      isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-    }`;
+    hover:-translate-y-1 transition-all duration-300 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`;
 
   return (
     <div className="h-screen w-full bg-rose-50 relative overflow-hidden">
@@ -62,15 +68,8 @@ const LoginPage = () => {
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <label className="block text-sm font-medium text-rose-700 mb-1">Email</label>
-                <input
-                  {...register("email")}
-                  type="email"
-                  placeholder="Enter your email"
-                  className={inputClass}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                )}
+                <input {...register("email")} type="email" placeholder="Enter your email" className={inputClass} />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
               </div>
 
               <div className="relative">
@@ -94,9 +93,7 @@ const LoginPage = () => {
                     )}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-                )}
+                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
               </div>
 
               <button type="submit" className={buttonClass} disabled={isSubmitting}>
