@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { X, Calendar, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
 import { useReservation } from "@/app/hooks/useReservationModal";
+import { useRouter } from "next/navigation";
 
 interface ReservationModalProps {
   isOpen: boolean;

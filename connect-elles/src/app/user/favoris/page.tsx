@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Heart, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Blog {
   _id: string;
@@ -17,6 +18,14 @@ interface Favorite {
 }
 
 const UserFavorites = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "normal-user") {
+      router.replace("/");
+    }
+  }, []);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const userId = localStorage.getItem("userId");
@@ -28,15 +37,12 @@ const UserFavorites = () => {
 
       try {
         setIsLoading(true);
-        const response = await fetch(
-          `http://localhost:4000/favorites/${userId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`http://localhost:4000/favorites/${userId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -56,16 +62,13 @@ const UserFavorites = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/favorites/${favoriteId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/favorites/${favoriteId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         setFavorites(favorites.filter((fav) => fav._id !== favoriteId));
@@ -88,12 +91,8 @@ const UserFavorites = () => {
       <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center p-12 bg-pink-50 rounded-2xl shadow-xl">
-            <h2 className="text-3xl font-bold text-pink-600 mb-4">
-              No Favorites Yet
-            </h2>
-            <p className="text-slate-600 mb-8">
-              You haven't added any blogs to your favorites.
-            </p>
+            <h2 className="text-3xl font-bold text-pink-600 mb-4">No Favorites Yet</h2>
+            <p className="text-slate-600 mb-8">You haven't added any blogs to your favorites.</p>
             <Link href="/user/blogs">
               <div className="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform hover:-translate-y-1 transition-all duration-300">
                 Browse Blogs
@@ -145,12 +144,8 @@ const UserFavorites = () => {
                   </div>
 
                   <div className="p-6 border-t-4 border-pink-400">
-                    <h2 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2">
-                      {favorite.blog.title}
-                    </h2>
-                    <p className="text-slate-600 mb-6 line-clamp-3">
-                      {favorite.blog.summary}
-                    </p>
+                    <h2 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2">{favorite.blog.title}</h2>
+                    <p className="text-slate-600 mb-6 line-clamp-3">{favorite.blog.summary}</p>
                     <Link href={`blogs/${favorite.blog._id}`}>
                       <div className="inline-flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium shadow-md shadow-pink-500/20 hover:shadow-pink-500/30 transform hover:-translate-y-1 transition-all duration-300">
                         Read More

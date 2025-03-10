@@ -5,8 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { API_URL, formatDate, getStatusColor } from "@/app/utils/constants";
 import { useReservations } from "@/app/hooks/useReservations";
+import { useRouter } from "next/navigation";
 
 const UserReservations = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "normal-user") {
+      router.replace("/");
+    }
+  }, []);
   const { reservations, isLoading, cancelLoading, cancelReservation } = useReservations();
 
   if (isLoading) {

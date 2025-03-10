@@ -5,10 +5,18 @@ import { Skill, SkillFormData } from "@/app/utils/types/skill";
 import { deleteSkill, editSkill, createSkill, fetchSkills } from "./skill-action";
 import SkillItem from "./SkillItem";
 import SkillForm from "./SkillForm";
+import { useRouter } from "next/router";
 
 const SkillsList = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "mentor") {
+      router.replace("/");
+    }
+  }, []);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [newSkill, setNewSkill] = useState({ title: "", description: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);

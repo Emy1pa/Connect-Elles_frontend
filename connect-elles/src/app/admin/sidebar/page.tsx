@@ -1,8 +1,18 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { FolderOpen, Users, BarChart } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "admin") {
+      router.replace("/");
+    }
+  }, []);
   const menuItems = [
     { icon: FolderOpen, label: "Categories", path: "/admin/categories" },
     { icon: BarChart, label: "Statistics", path: "/admin/statistics" },

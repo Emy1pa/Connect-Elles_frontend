@@ -1,10 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Calendar, Heart, MessageSquare } from "lucide-react";
-import { CommentStatistics, FavoriteStatistics, ReservationStatistic } from "@/app/utils/statistics";
 import { useUserStatistics } from "@/app/hooks/useUserStatistics";
+import { useRouter } from "next/navigation";
 
 const UserStatisticsDashboard = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "normal-user") {
+      router.replace("/");
+    }
+  }, []);
   const { isLoading, favorites, reservations, comments, error } = useUserStatistics();
 
   if (isLoading) {

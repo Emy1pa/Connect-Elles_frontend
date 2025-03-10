@@ -1,12 +1,21 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Calendar, ArrowRight, X, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { API_URL, formatDate, getStatusColor } from "@/app/utils/constants";
 import { useReservations } from "./ReservationService";
+import { useRouter } from "next/navigation";
 
 const MentorReservations = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "mentor") {
+      router.replace("/");
+    }
+  }, []);
   const { reservations, isLoading, confirmLoading, confirmReservation } = useReservations();
 
   if (isLoading) {

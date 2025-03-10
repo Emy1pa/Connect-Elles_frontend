@@ -8,9 +8,17 @@ import { CategoryFormData, categorySchema } from "@/app/utils/types/category";
 import { addCategory, deleteCategory, editCategory, loadCategories } from "./category-actions";
 import CategoryItem from "./CategoryItem";
 import { Category } from "@/app/utils/interface";
-import { API_URL, getAuthHeaders } from "@/app/utils/constants";
+import { useRouter } from "next/navigation";
 
 const CategoriesList = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "admin") {
+      router.replace("/");
+    }
+  }, []);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,9 +108,7 @@ const CategoriesList = () => {
       {categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 bg-pink-50 rounded-2xl border border-pink-200">
           <div className="text-xl font-medium text-slate-800 mb-2">No Categories Found</div>
-          <p className="text-slate-600 text-center mb-4">
-            Start by adding your first category using the button above.
-          </p>
+          <p className="text-slate-600 text-center mb-4">Start by adding your first category using the button above.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

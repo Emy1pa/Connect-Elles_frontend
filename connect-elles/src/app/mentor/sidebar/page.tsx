@@ -1,8 +1,18 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Book, Briefcase, Brain, Ticket } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const MentorSideBar = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "mentor") {
+      router.replace("/");
+    }
+  }, []);
   const menuItems = [
     { icon: Brain, label: "Skills", path: "/mentor/skills" },
     { icon: Book, label: "Articles", path: "/mentor/blogs" },

@@ -4,8 +4,17 @@ import { Calendar, Heart, MessageSquare, Book, Briefcase, Award } from "lucide-r
 
 import { fetchStatistics } from "./StatisticsService";
 import { Statistics } from "@/app/utils/statistics";
+import { useRouter } from "next/navigation";
 
 const AdminStatisticsDashboard = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "admin") {
+      router.replace("/");
+    }
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [statistics, setStatistics] = useState<Statistics>({
     favorites: null,
