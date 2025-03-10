@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,8 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterFormData, registerSchema } from "@/app/utils/types/register";
 import { girls } from "@/app/utils/images";
 import { useRegister } from "@/app/hooks/useRegister";
+import { useRouter } from "next/navigation";
 
 export const RegisterPage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Or check auth context
+    if (token) {
+      router.replace("/");
+    }
+  }, []);
   const { isSubmitting, register: registerUser } = useRegister();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -53,9 +61,7 @@ export const RegisterPage = () => {
 
   const buttonClass = `w-full px-6 py-3 bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-xl 
     font-medium shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transform 
-    hover:-translate-y-1 transition-all duration-300 ${
-      isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-    }`;
+    hover:-translate-y-1 transition-all duration-300 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`;
 
   return (
     <div className="h-screen w-full bg-pink-50 relative overflow-hidden">
@@ -87,35 +93,19 @@ export const RegisterPage = () => {
                   placeholder="Enter your full name"
                   className={inputClass}
                 />
-                {errors.fullName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>
-                )}
+                {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-pink-700 mb-1">Username</label>
-                <input
-                  {...register("username")}
-                  type="text"
-                  placeholder="Enter your username"
-                  className={inputClass}
-                />
-                {errors.username && (
-                  <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
-                )}
+                <input {...register("username")} type="text" placeholder="Enter your username" className={inputClass} />
+                {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-pink-700 mb-1">Email</label>
-                <input
-                  {...register("email")}
-                  type="email"
-                  placeholder="Enter your email"
-                  className={inputClass}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                )}
+                <input {...register("email")} type="email" placeholder="Enter your email" className={inputClass} />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
               </div>
 
               <div className="relative">
@@ -137,15 +127,11 @@ export const RegisterPage = () => {
                     <Eye size={20} className="text-rose-400 hover:text-rose-600" />
                   )}
                 </button>
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-                )}
+                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-pink-700 mb-1">
-                  Profile Image
-                </label>
+                <label className="block text-sm font-medium text-pink-700 mb-1">Profile Image</label>
                 <div className="relative">
                   <input
                     type="file"
@@ -154,9 +140,7 @@ export const RegisterPage = () => {
                     id="profile-image"
                     onChange={handleImageChange}
                   />
-                  {errors.profileImage && (
-                    <p className="text-red-500 text-sm mt-1">{errors.profileImage.message}</p>
-                  )}
+                  {errors.profileImage && <p className="text-red-500 text-sm mt-1">{errors.profileImage.message}</p>}
                   <label
                     htmlFor="profile-image"
                     className="flex items-center justify-center w-full h-32 border-2 border-dashed border-pink-200 rounded-xl cursor-pointer hover:border-pink-400 transition-all duration-300"
