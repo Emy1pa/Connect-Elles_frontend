@@ -2,8 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, Heart, MessageSquare, Book, Briefcase, Award } from "lucide-react";
 import { fetchMentorStatistics, MentorStatisticsData } from "./MentorStatisticsService";
+import { useRouter } from "next/navigation";
 
 const MentorStatisticsDashboard = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "mentor") {
+      router.replace("/");
+    }
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [statistics, setStatistics] = useState<MentorStatisticsData>({
     favorites: null,

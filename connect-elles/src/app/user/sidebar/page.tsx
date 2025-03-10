@@ -1,8 +1,18 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { LayoutDashboard, Briefcase, Heart, Ticket } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const UserSideBar = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "normal-user") {
+      router.replace("/");
+    }
+  }, []);
   const menuItems = [
     { icon: Briefcase, label: "Statistics", path: "/user/statistics" },
     { icon: Heart, label: "Favoris", path: "/user/favoris" },

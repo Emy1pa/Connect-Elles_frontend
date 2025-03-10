@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 export const RegisterPage = () => {
   const router = useRouter();
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Or check auth context
+    const token = localStorage.getItem("token");
     if (token) {
       router.replace("/");
     }

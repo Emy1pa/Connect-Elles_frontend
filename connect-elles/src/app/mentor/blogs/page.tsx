@@ -7,8 +7,17 @@ import BlogForm from "./BlogForm";
 import { Category } from "@/app/utils/interface";
 import { createBlog, deleteBlog, editBlog, fetchBlogs } from "./blog-action";
 import { fetchCategories } from "@/app/utils/constants";
+import { useRouter } from "next/navigation";
 
 const BlogsList = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "mentor") {
+      router.replace("/");
+    }
+  }, []);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);

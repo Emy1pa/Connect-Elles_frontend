@@ -7,8 +7,17 @@ import ServiceItem from "./ServiceItem";
 import { fetchCategories } from "@/app/utils/constants";
 import ServiceForm from "./ServiceForm";
 import { Category } from "@/app/utils/interface";
+import { useRouter } from "next/navigation";
 
 const ServicesList = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    if (!token || role !== "mentor") {
+      router.replace("/");
+    }
+  }, []);
   const [services, setServices] = useState<Service[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);

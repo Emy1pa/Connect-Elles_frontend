@@ -13,11 +13,8 @@ const MentorsList: React.FC = () => {
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
   const fetchMentors = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token non trouvé");
       const response = await axios.get(`${API_URL}/api/users/mentors`, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
