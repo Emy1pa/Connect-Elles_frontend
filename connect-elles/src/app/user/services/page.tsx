@@ -4,6 +4,7 @@ import { ArrowRight, Clock, Tag, Users, Calendar, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { fetchCategories } from "@/app/utils/constants";
 import { useServices } from "@/app/hooks/useServices";
+import { Service } from "@/app/utils/interface";
 const ServiceList = () => {
   const router = useRouter();
   const { services, isLoading } = useServices();
@@ -26,7 +27,10 @@ const ServiceList = () => {
   useEffect(() => {
     loadCategories();
   }, []);
-  const filteredServices = services.filter((service) => {
+
+  const filteredServices = services.filter((service: Service) => {
+    if (service.status === "ARCHIVED") return false;
+
     const searchMatch = service.title.toLowerCase().includes(searchTerm.toLowerCase());
     const categoryMatch = selectedCategory === "" || service.category?._id === selectedCategory;
     const priceMatch =
@@ -171,13 +175,6 @@ const ServiceList = () => {
                   </div>
 
                   <div className="text-lg font-bold text-rose-600 mb-4">${service.price}</div>
-
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center text-slate-500 text-sm">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {new Date(service.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
 
                   <button
                     onClick={() => router.push(`/user/services/${service._id}`)}
