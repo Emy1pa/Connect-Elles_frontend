@@ -34,7 +34,13 @@ export function useReservation({ userId, serviceId, onReservationSuccess, onClos
       setErrorMessage("Please select a reservation date");
       return false;
     }
+    const selectedDate = new Date(reservationDate);
+    const now = new Date();
 
+    if (selectedDate <= now) {
+      setErrorMessage("Reservation date must be in the future");
+      return false;
+    }
     if (!cardHolderName) {
       setErrorMessage("Please enter the cardholder name");
       return false;
