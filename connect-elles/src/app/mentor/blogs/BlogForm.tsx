@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Loader2, Plus, Upload } from "lucide-react";
 import Image from "next/image";
-import { Blog, BlogFormData, blogSchema } from "@/app/utils/types/blog";
-import { Category } from "@/app/utils/interface";
+import { BlogFormData, blogSchema } from "@/app/utils/types/blog";
+import { Blog, Category } from "@/app/utils/interface";
 
 interface BlogFormProps {
   categories: Category[];

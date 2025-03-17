@@ -1,7 +1,6 @@
 import axios from "axios";
-import { Blog } from "@/app/utils/types/blog";
 import { API_URL, getAuthHeaders } from "@/app/utils/constants";
-import { Category } from "@/app/utils/interface";
+import { Blog } from "@/app/utils/interface";
 
 export const editBlog = async (blogId: string, formData: FormData): Promise<Blog> => {
   try {

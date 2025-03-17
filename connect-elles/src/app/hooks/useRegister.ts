@@ -10,7 +10,6 @@ export const useRegister = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
 
   const register = async (data: RegisterFormData) => {
     if (isSubmitting) return;
@@ -32,13 +31,12 @@ export const useRegister = () => {
       });
 
       if (response.status === 201) {
-        setUserEmail(data.email);
         setRegistrationSuccess(true);
 
         toast.success("Registration successful!");
 
         setTimeout(() => {
-          router.push("/login");
+          router.replace("/login");
         }, 1500);
       } else {
         throw new Error(response.data.message || "Registration failed");
@@ -58,7 +56,6 @@ export const useRegister = () => {
   return {
     isSubmitting,
     registrationSuccess,
-    userEmail,
     register,
   };
 };

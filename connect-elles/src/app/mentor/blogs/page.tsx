@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Plus, Loader2 } from "lucide-react";
-import { Blog, BlogFormData } from "@/app/utils/types/blog";
+import { BlogFormData } from "@/app/utils/types/blog";
 import BlogItem from "./BlogItem";
 import BlogForm from "./BlogForm";
-import { Category } from "@/app/utils/interface";
+import { Blog, Category } from "@/app/utils/interface";
 import { createBlog, deleteBlog, editBlog, fetchBlogs } from "./blog-action";
 import { fetchCategories } from "@/app/utils/constants";
 import { useRouter } from "next/navigation";

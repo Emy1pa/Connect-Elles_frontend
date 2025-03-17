@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, Heart, MessageSquare } from "lucide-react";
-import { useUserStatistics } from "@/app/hooks/useUserStatistics";
 import { useRouter } from "next/navigation";
+import { fetchUserStatistics, UserStatisticsData } from "./UserStatistics";
 
 const UserStatisticsDashboard = () => {
   const router = useRouter();
@@ -13,8 +13,30 @@ const UserStatisticsDashboard = () => {
       router.replace("/");
     }
   }, []);
-  const { isLoading, favorites, reservations, comments, error } = useUserStatistics();
+  const [isLoading, setIsLoading] = useState(true);
+  const [statistics, setStatistics] = useState<UserStatisticsData>({
+    favorites: null,
+    comments: null,
+    reservations: null,
+  });
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  const fetchAllStatistics = async () => {
+    if (!userId || !token) return;
 
+    setIsLoading(true);
+    try {
+      const data = await fetchUserStatistics(token, userId);
+      setStatistics(data);
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchAllStatistics();
+  }, [userId, token]);
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -22,15 +44,7 @@ const UserStatisticsDashboard = () => {
       </div>
     );
   }
-  if (error) {
-    return (
-      <div className="bg-white p-6">
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg">
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
+  const { favorites, comments, reservations } = statistics;
   return (
     <div className="bg-white p-6">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">My Statistics</h2>

@@ -28,11 +28,11 @@ export const useLogin = () => {
         toast.success("Login successful!");
         setTimeout(() => {
           if (decoded.userRole === "admin") {
-            router.push("/admin/statistics");
+            router.replace("/admin/statistics");
           } else if (decoded.userRole === "mentor") {
-            router.push("/mentor/statistics");
+            router.replace("/mentor/statistics");
           } else if (decoded.userRole === "normal-user") {
-            router.push("/user/statistics");
+            router.replace("/user/statistics");
           }
         }, 1500);
       } else {
