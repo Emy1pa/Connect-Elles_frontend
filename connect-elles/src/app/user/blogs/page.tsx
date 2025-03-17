@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowRight, Calendar, Search, Tag, User } from "lucide-react";
 import { Blog } from "@/app/utils/interface";
 import { useRouter } from "next/navigation";
-import { API_URL, fetchCategories } from "@/app/utils/constants";
+import { fetchCategories } from "@/app/utils/constants";
 import { fetchPublishedBlogs } from "./blogService";
 
 const BlogList = () => {

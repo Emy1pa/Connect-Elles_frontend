@@ -4,10 +4,11 @@ import { Plus, Loader2 } from "lucide-react";
 import { BlogFormData } from "@/app/utils/types/blog";
 import BlogItem from "./BlogItem";
 import BlogForm from "./BlogForm";
-import { Blog, Category } from "@/app/utils/interface";
+import { Category } from "@/app/utils/interface";
 import { createBlog, deleteBlog, editBlog, fetchBlogs } from "./blog-action";
 import { fetchCategories } from "@/app/utils/constants";
 import { useRouter } from "next/navigation";
+import { Blog } from "@/app/utils/interface";
 
 const BlogsList = () => {
   const router = useRouter();

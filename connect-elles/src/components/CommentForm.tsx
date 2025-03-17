@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { Send } from "lucide-react";
-
+import axios from "axios";
+import { getAuthHeaders } from "@/app/utils/constants";
 interface CommentFormProps {
   blogId: string;
   user: string | null;
   onCommentAdded: (newComment: any) => void;
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({
-  blogId,
-  user,
-  onCommentAdded,
-}) => {
+const CommentForm: React.FC<CommentFormProps> = ({ blogId, user, onCommentAdded }) => {
   const [text, setText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,29 +27,10 @@ const CommentForm: React.FC<CommentFormProps> = ({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/comments/${user}/${blogId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            text: text,
-          }),
-        }
-      );
+      const response = await axios.post(`http://localhost:4000/comments/${user}/${blogId}`, { text }, getAuthHeaders());
 
-      if (response.ok) {
-        const newComment = await response.json();
-        onCommentAdded(newComment);
-        setText("");
-      } else {
-        const error = await response.json();
-        console.error("Failed to submit comment:", error);
-        alert("Failed to submit comment. Please try again.");
-      }
+      onCommentAdded(response.data);
+      setText("");
     } catch (error) {
       console.error("Error submitting comment:", error);
       alert("An error occurred. Please try again.");
@@ -70,13 +48,9 @@ const CommentForm: React.FC<CommentFormProps> = ({
             onChange={(e) => setText(e.target.value)}
             placeholder="Write a comment..."
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none min-h-[100px]"
-            disabled={isSubmitting || !user}
+            disabled={isSubmitting || !user || localStorage.getItem("userRole") !== "normal-user"}
           />
-          {!user && (
-            <p className="mt-2 text-sm text-rose-500">
-              Please log in to comment
-            </p>
-          )}
+          {!user && <p className="mt-2 text-sm text-rose-500">Please log in to comment</p>}
         </div>
         <button
           type="submit"

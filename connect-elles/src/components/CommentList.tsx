@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Comment } from "@/app/utils/interface";
 import { User, Clock, Trash2, Edit, Save, X } from "lucide-react";
 import { useCommentOperations } from "@/app/hooks/useCommentOperations";
+import { formatDate } from "@/app/utils/constants";
 
 interface CommentListProps {
   comments: Comment[];
@@ -53,11 +54,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments, onCommentDeleted, o
             </div>
             <div className="flex items-center text-sm text-gray-500">
               <Clock className="w-4 h-4 mr-1" />
-              {new Date(comment.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
+              {formatDate(comment.createdAt)}
             </div>
             {userId === comment.user?._id && (
               <div className="flex">

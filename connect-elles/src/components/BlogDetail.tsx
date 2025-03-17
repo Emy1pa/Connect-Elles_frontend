@@ -8,7 +8,7 @@ import CommentList from "./CommentList";
 import { useBlogDetail } from "@/app/hooks/useBlogDetail";
 import { useBlogFavorites } from "@/app/hooks/useBlogFavorites";
 import { useBlogComments } from "@/app/hooks/useBlogComments";
-import { API_URL } from "@/app/utils/constants";
+import { API_URL, formatDate } from "@/app/utils/constants";
 
 interface BlogDetailProps {
   blogId: string;
@@ -90,17 +90,13 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                   <div className="flex flex-wrap items-center text-white/90 gap-4">
                     <div className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full">
                       <Calendar className="w-5 h-5 mr-2" />
-                      {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {formatDate(blog.createdAt)}
                     </div>
                     <div className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full">
                       <User className="w-5 h-5 mr-2" />
                       {blog.user?.fullName}
                     </div>
-                    {localStorage.getItem("userId") && (
+                    {localStorage.getItem("userId") && localStorage.getItem("userRole") === "normal-user" && (
                       <button
                         onClick={handleFavoriteToggle}
                         className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full hover:bg-black/20 transition-colors"

@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Loader2, Plus, Upload } from "lucide-react";
 import Image from "next/image";
 import { BlogFormData, blogSchema } from "@/app/utils/types/blog";
-import { Blog, Category } from "@/app/utils/interface";
+import { Category } from "@/app/utils/interface";
+import { Blog } from "@/app/utils/interface";
 
 interface BlogFormProps {
   categories: Category[];
