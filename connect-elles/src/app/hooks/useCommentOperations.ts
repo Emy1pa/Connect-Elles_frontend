@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Comment } from "@/app/utils/interface";
-import { API_URL } from "../utils/constants";
+import { API_URL, getAuthHeaders } from "../utils/constants";
 import axios from "axios";
 
 export const useCommentOperations = (
@@ -30,12 +30,7 @@ export const useCommentOperations = (
     setIsDeleting(commentId);
 
     try {
-      const response = await axios.delete(`${API_URL}/comments/${commentId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(`${API_URL}/comments/${commentId}`, getAuthHeaders());
 
       onCommentDeleted(commentId);
     } catch (error) {
@@ -70,17 +65,12 @@ export const useCommentOperations = (
     setIsUpdating(true);
 
     try {
-      const response = await axios.patch(
+      await axios.patch(
         `${API_URL}/comments/${commentId}`,
         {
           text: editText,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        getAuthHeaders()
       );
 
       onCommentUpdated(commentId, editText);

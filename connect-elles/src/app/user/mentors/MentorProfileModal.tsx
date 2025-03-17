@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { UserCircle2, X } from "lucide-react";
-import { API_URL } from "@/app/utils/constants";
+import { API_URL, getAuthHeaders } from "@/app/utils/constants";
 import axios from "axios";
 import { Mentor, Skill } from "@/app/utils/interface";
 
@@ -13,13 +13,7 @@ const MentorProfileModal: React.FC<{
   const [isLoadingSkills, setIsLoadingSkills] = useState(true);
   const fetchMentorSkills = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_URL}/api/skills/mentor/${mentor._id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(`${API_URL}/api/skills/mentor/${mentor._id}`, getAuthHeaders());
 
       setSkills(response.data);
     } catch (error) {

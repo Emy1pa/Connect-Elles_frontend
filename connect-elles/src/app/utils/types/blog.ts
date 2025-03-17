@@ -9,19 +9,24 @@ export const blogSchema = z.object({
   blogImage: z.instanceof(File).nullable(),
 });
 
-// export interface Blog {
-//   _id: string;
-//   title: string;
-//   content: string;
-//   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-//   blogImage?: string;
-//   summary: string;
-//   category: {
-//     _id: string;
-//     title: string;
-//   } | null;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
+export interface Blog {
+  _id: string;
+  title: string;
+  content: string;
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  blogImage?: string;
+  summary: string;
+  category: {
+    _id: string;
+    title: string;
+  } | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Category {
+  _id: string;
+  title: string;
+}
 
 export type BlogFormData = z.infer<typeof blogSchema>;

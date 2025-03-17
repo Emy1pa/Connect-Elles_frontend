@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Reservation } from "@/app/utils/interface";
-import { API_URL } from "../utils/constants";
+import { API_URL, getAuthHeaders } from "../utils/constants";
 import axios from "axios";
 export const useReservations = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -16,13 +16,7 @@ export const useReservations = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(`${API_URL}/reservations/user/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.get(`${API_URL}/reservations/user/${userId}`, getAuthHeaders());
       setReservations(response.data);
     } catch (error) {
       console.error("Error fetching reservations:", error);

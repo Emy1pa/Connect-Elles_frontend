@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Blog, Favorite } from "../utils/interface";
-import { API_URL } from "../utils/constants";
+import { API_URL, getAuthHeaders } from "../utils/constants";
 import axios from "axios";
 
 export const useFavorites = () => {
@@ -19,12 +19,7 @@ export const useFavorites = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(`${API_URL}/favorites/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(`${API_URL}/favorites/${userId}`, getAuthHeaders());
       setFavorites(response.data);
     } catch (error) {
       console.error("Error fetching favorites:", error);
@@ -41,12 +36,7 @@ export const useFavorites = () => {
     if (!token) return;
 
     try {
-      await axios.delete(`${API_URL}/favorites/${favoriteId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(`${API_URL}/favorites/${favoriteId}`, getAuthHeaders());
 
       setFavorites(favorites.filter((fav) => fav._id !== favoriteId));
       return true;

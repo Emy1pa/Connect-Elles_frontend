@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Favorite } from "@/app/utils/interface";
 import axios from "axios";
-import { API_URL } from "../utils/constants";
+import { API_URL, getAuthHeaders } from "../utils/constants";
 
 export const useBlogFavorites = (blogId: string) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -17,12 +17,7 @@ export const useBlogFavorites = (blogId: string) => {
 
   const checkIfFavorite = async (userId: string, token: string) => {
     try {
-      const response = await axios.get<Favorite[]>(`${API_URL}/favorites/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get<Favorite[]>(`${API_URL}/favorites/${userId}`, getAuthHeaders());
       const favorites = response.data;
       const favorite = favorites.find((fav) => fav.blog && fav.blog._id === blogId);
       if (favorite) {
@@ -47,27 +42,12 @@ export const useBlogFavorites = (blogId: string) => {
 
     try {
       if (isFavorite && favoriteId) {
-        await axios.delete(`${API_URL}/favorites/${favoriteId}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.delete(`${API_URL}/favorites/${favoriteId}`, getAuthHeaders());
 
         setIsFavorite(false);
         setFavoriteId(null);
       } else {
-        const response = await axios.post(
-          `${API_URL}/favorites/${userId}/${blogId}`,
-          {},
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await axios.post(`${API_URL}/favorites/${userId}/${blogId}`, {}, getAuthHeaders());
         setIsFavorite(true);
         setFavoriteId(response.data._id);
       }
