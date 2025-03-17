@@ -18,6 +18,7 @@ export const RegisterPage = () => {
       router.replace("/");
     }
   }, []);
+
   const { isSubmitting, register: registerUser } = useRegister();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);

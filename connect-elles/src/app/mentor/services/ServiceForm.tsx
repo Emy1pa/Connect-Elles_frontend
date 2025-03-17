@@ -132,7 +132,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ categories, onSubmit, editing
             <input
               type="number"
               {...register("price", { valueAsNumber: true })}
-              min="0"
+              min="1"
               step="0.01"
               className={inputClass}
             />

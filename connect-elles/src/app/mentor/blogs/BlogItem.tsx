@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
-import { Blog } from "@/app/utils/types/blog";
 import { API_URL } from "@/app/utils/constants";
+import { Blog } from "@/app/utils/interface";
 
 interface BlogItemProps {
   blog: Blog;

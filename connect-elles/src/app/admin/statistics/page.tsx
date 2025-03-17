@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Calendar, Heart, MessageSquare, Book, Briefcase, Award } from "lucide-react";
-
 import { fetchStatistics } from "./StatisticsService";
 import { Statistics } from "@/app/utils/statistics";
 import { useRouter } from "next/navigation";
@@ -26,25 +25,23 @@ const AdminStatisticsDashboard = () => {
     categories: null,
     users: null,
   });
+  const loadStatistics = async (): Promise<void> => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
+    if (!userId || !token) return;
+
+    setIsLoading(true);
+    try {
+      const data = await fetchStatistics(token);
+      setStatistics(data);
+    } catch (error) {
+      console.error("Failed to load statistics:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const loadStatistics = async (): Promise<void> => {
-      const userId = localStorage.getItem("userId");
-      const token = localStorage.getItem("token");
-
-      if (!userId || !token) return;
-
-      setIsLoading(true);
-      try {
-        const data = await fetchStatistics(token);
-        setStatistics(data);
-      } catch (error) {
-        console.error("Failed to load statistics:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadStatistics();
   }, []);
 

@@ -15,11 +15,7 @@ export const loadCategories = async (): Promise<Category[]> => {
 
 export const addCategory = async (data: CategoryFormData): Promise<Category> => {
   try {
-    const response = await axios.post<Category>(
-      `${API_URL}/api/categories`,
-      data,
-      getAuthHeaders()
-    );
+    const response = await axios.post<Category>(`${API_URL}/api/categories`, data, getAuthHeaders());
     return response.data;
   } catch (error) {
     console.error("Error adding category:", error);
@@ -28,11 +24,7 @@ export const addCategory = async (data: CategoryFormData): Promise<Category> => 
 };
 export const editCategory = async (categoryId: string, title: string): Promise<Category> => {
   try {
-    const response = await axios.put<Category>(
-      `${API_URL}/api/categories/${categoryId}`,
-      { title },
-      getAuthHeaders()
-    );
+    const response = await axios.put<Category>(`${API_URL}/api/categories/${categoryId}`, { title }, getAuthHeaders());
     return response.data;
   } catch (error) {
     console.error("Error updating category:", error);
