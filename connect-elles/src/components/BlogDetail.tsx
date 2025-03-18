@@ -9,6 +9,7 @@ import { useBlogDetail } from "@/app/hooks/useBlogDetail";
 import { useBlogFavorites } from "@/app/hooks/useBlogFavorites";
 import { useBlogComments } from "@/app/hooks/useBlogComments";
 import { API_URL, formatDate } from "@/app/utils/constants";
+import { useBlogFavoriteCount } from "@/app/hooks/useBlogFavoriteCount";
 
 interface BlogDetailProps {
   blogId: string;
@@ -17,9 +18,9 @@ interface BlogDetailProps {
 const BlogDetail = ({ blogId }: BlogDetailProps) => {
   const router = useRouter();
   const [showComments, setShowComments] = useState(false);
-
+  const { favoriteCount, refetch } = useBlogFavoriteCount(blogId);
   const { blog, isLoading } = useBlogDetail(blogId);
-  const { isFavorite, handleFavoriteToggle } = useBlogFavorites(blogId);
+  const { isFavorite, handleFavoriteToggle } = useBlogFavorites(blogId, refetch);
   const { comments, handleCommentAdded, handleCommentDeleted, handleCommentUpdated } = useBlogComments(
     blogId,
     showComments
@@ -95,6 +96,10 @@ const BlogDetail = ({ blogId }: BlogDetailProps) => {
                     <div className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full">
                       <User className="w-5 h-5 mr-2" />
                       {blog.user?.fullName}
+                    </div>
+                    <div className="flex items-center backdrop-blur-sm bg-black/10 px-3 py-1 rounded-full">
+                      <Heart className="w-5 h-5 mr-2 text-pink-500" />
+                      {favoriteCount} {favoriteCount === 1 ? "favorite" : "favorites"}
                     </div>
                     {localStorage.getItem("userId") && localStorage.getItem("userRole") === "normal-user" && (
                       <button
