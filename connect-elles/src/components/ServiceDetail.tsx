@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowLeft, Calendar, Tag, Clock, Users, User, LogIn } from "lucide-react";
 import ReservationModal from "./ReservationModal";
 import { useServiceDetail } from "@/app/hooks/useServiceDetail";
+import { formatDate } from "@/app/utils/constants";
 
 interface ServiceDetailProps {
   serviceId: string;
@@ -169,11 +170,7 @@ const ServiceDetail = ({ serviceId }: ServiceDetailProps) => {
 
                 <div className="flex items-center text-slate-500 text-sm mb-6">
                   <Calendar className="w-4 h-4 mr-2" />
-                  {new Date(service.createdAt).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  {formatDate(service.createdAt)}
                 </div>
 
                 <div className="prose prose-rose prose-lg max-w-none prose-headings:text-slate-800 prose-p:text-slate-700 mb-6">

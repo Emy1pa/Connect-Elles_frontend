@@ -3,7 +3,7 @@ import { Favorite } from "@/app/utils/interface";
 import axios from "axios";
 import { API_URL, getAuthHeaders } from "../utils/constants";
 
-export const useBlogFavorites = (blogId: string) => {
+export const useBlogFavorites = (blogId: string, onToggle?: () => void) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
 
@@ -50,6 +50,9 @@ export const useBlogFavorites = (blogId: string) => {
         const response = await axios.post(`${API_URL}/favorites/${userId}/${blogId}`, {}, getAuthHeaders());
         setIsFavorite(true);
         setFavoriteId(response.data._id);
+      }
+      if (onToggle) {
+        onToggle();
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
